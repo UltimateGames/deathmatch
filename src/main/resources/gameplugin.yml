@@ -1,0 +1,24 @@
+main-class: "com.greatmancode.deathmatch.Deathmatch"
+description: "The official Ultimate Games Deathmatch game"
+version: "1.0"
+author: "greatman"
+scoreTypeName: "Kills:Deaths"
+scoreType: "POINTS_HIGHER"
+playerType: "CONFIGUREABLE"
+DefaultSettings:
+  MinPlayers: 2
+  MaxPlayers: 16
+  Players:
+    Store-Inventory: false
+    Store-Armor: false
+    Store-Exp: false
+    Store-Effects: false
+    Store-Gamemode: false
+  Reset-After-Match: true
+  Allow-Explosion-Damage: true
+  Allow-Explosion-Block-Breaking: false
+  Allow-Building: false
+  Allow-Breaking: false
+Instructions:
+- "Kill everybody as much time as possible!"
+Messages: {}
