@@ -14,7 +14,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -23,6 +25,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class Deathmatch extends GamePlugin {
 
@@ -188,8 +192,17 @@ public class Deathmatch extends GamePlugin {
 			}
 
 			if (!(damager instanceof Player)) {
-				event.setCancelled(true);
-				return;
+				if ((damager instanceof Arrow)) {
+					LivingEntity shooter = ((Arrow) damager).getShooter();
+					if (!(shooter instanceof Player)) {
+						event.setCancelled(true);
+						return;
+					}
+				} else {
+					event.setCancelled(true);
+					return;
+				}
+
 			}
 		}
 	}
@@ -207,7 +220,7 @@ public class Deathmatch extends GamePlugin {
 
 			if (killer != null) {
 				if (ultimateGames.getPlayerManager().isPlayerInArena(killer.getName()) && ultimateGames.getPlayerManager().getPlayerArena(killer.getName()).equals(damagedArena)) {
-					//playerList.get(damagedArena).get(killer.getName()).addKill();
+					killer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 10, 2));
 				}
 			}
 		}
