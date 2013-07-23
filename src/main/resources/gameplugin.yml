@@ -19,6 +19,11 @@ DefaultSettings:
   Allow-Explosion-Block-Breaking: false
   Allow-Building: false
   Allow-Breaking: false
+CustomValues:
+  StartWaitTime: 30
+  GameTime: 300
+
 Instructions:
 - "Kill everybody as much time as possible!"
-Messages: {}
+Messages:
+  GameEnd: "%s won with %s kills!"

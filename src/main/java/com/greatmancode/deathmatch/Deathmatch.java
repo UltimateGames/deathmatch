@@ -1,5 +1,6 @@
 package com.greatmancode.deathmatch;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import me.ampayne2.UltimateGames.API.GamePlugin;
@@ -73,24 +74,27 @@ public class Deathmatch extends GamePlugin {
 
 	@Override
 	public Boolean beginArena(Arena arena) {
-		ultimateGames.getCountdownManager().createEndingCountdown(arena, 30, true);
+		ultimateGames.getCountdownManager().createEndingCountdown(arena, ultimateGames.getConfigManager().getGameConfig(game).getConfig().getInt("CustomValues.GameTime"), true);
 		return true;
 	}
 
 	@Override
 	public Boolean endArena(Arena arena) {
-		arenaScoreboard.get(arena).reset();
+		ultimateGames.getMessageManager().broadcastReplacedGameMessageToArena(game, arena, "GameEnd", arenaScoreboard.get(arena).getHighestPlayer());
 		if (ultimateGames.getCountdownManager().isStartingCountdownEnabled(arena)) {
 			ultimateGames.getCountdownManager().stopStartingCountdown(arena);
 		}
 		if (ultimateGames.getCountdownManager().isEndingCountdownEnabled(arena)) {
 			ultimateGames.getCountdownManager().stopEndingCountdown(arena);
 		}
-		arena.setStatus(ArenaStatus.OPEN);
-		for (String p : arena.getPlayers()) {
+		System.out.println("AMOUNT OF PLAYERS:" + arena.getPlayers());
+		for (String p : new ArrayList<String>(arena.getPlayers())) {
+			System.out.println("PLAYER NAME:" + p);
 			ultimateGames.getPlayerManager().removePlayerFromArena(p, arena, false);
 		}
+		arena.setStatus(ArenaStatus.OPEN);
 		ultimateGames.getUGSignManager().updateLobbySignsOfArena(arena);
+		arenaScoreboard.get(arena).reset();
 		return true;
 	}
 
@@ -112,7 +116,7 @@ public class Deathmatch extends GamePlugin {
 	@Override
 	public Boolean addPlayer(Arena arena, String playerName) {
 		if (arena.getPlayers().size() >= arena.getMinPlayers() && !ultimateGames.getCountdownManager().isStartingCountdownEnabled(arena)) {
-			ultimateGames.getCountdownManager().createStartingCountdown(arena, 30);
+			ultimateGames.getCountdownManager().createStartingCountdown(arena, ultimateGames.getConfigManager().getGameConfig(game).getConfig().getInt("CustomValues.StartWaitTime"));
 		}
 		SpawnPoint spawnPoint = ultimateGames.getSpawnpointManager().getRandomSpawnPoint(arena);
 		spawnPoint.lock(false);
@@ -156,7 +160,9 @@ public class Deathmatch extends GamePlugin {
 
 	private void resetInventory(Player player) {
 		player.getInventory().clear();
-		player.getInventory().addItem(new ItemStack(Material.DIAMOND_SWORD, 1));
+		player.getInventory().addItem(new ItemStack(Material.IRON_SWORD, 1), new ItemStack(Material.BOW, 1), new ItemStack(Material.ARROW, 32));
+		player.getInventory().setArmorContents(new ItemStack[] {new ItemStack(Material.LEATHER_HELMET, 1), new ItemStack(Material.LEATHER_CHESTPLATE, 1), new ItemStack(Material.LEATHER_LEGGINGS, 1), new ItemStack(Material.LEATHER_BOOTS, 1)});
+
 		player.updateInventory();
 	}
 
