@@ -162,6 +162,7 @@ public class Deathmatch extends GamePlugin {
 
 	}
 
+	@SuppressWarnings("deprecation")
 	private void resetInventory(Player player) {
 		player.getInventory().clear();
 		player.getInventory().addItem(new ItemStack(Material.IRON_SWORD, 1), new ItemStack(Material.BOW, 1), new ItemStack(Material.ARROW, 32));
@@ -223,9 +224,8 @@ public class Deathmatch extends GamePlugin {
 					killer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 10, 2));
 				}
 			}
+			event.getDrops().clear();
 		}
-		event.getDrops().clear();
-
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
