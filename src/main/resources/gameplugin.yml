@@ -24,6 +24,6 @@ CustomValues:
   GameTime: 300
 
 Instructions:
-- "Kill everybody as much time as possible!"
+- "Kill others as much as possible in the time given!"
 Messages:
   GameEnd: "%s won with %s kills!"
