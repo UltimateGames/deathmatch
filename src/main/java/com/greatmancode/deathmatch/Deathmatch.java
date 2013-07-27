@@ -105,7 +105,7 @@ public class Deathmatch extends GamePlugin {
 			}
 		}
 		ultimateGames.getScoreboardManager().removeArenaScoreboard(arena, "Kills");
-		ultimateGames.getMessageManager().broadcastReplacedGameMessageToArena(game, arena, "GameEnd", highestScorer, Integer.toString(highScore));
+		ultimateGames.getMessageManager().broadcastReplacedGameMessage(game, "GameEnd", highestScorer, Integer.toString(highScore));
 		if (ultimateGames.getCountdownManager().isStartingCountdownEnabled(arena)) {
 			ultimateGames.getCountdownManager().stopStartingCountdown(arena);
 		}
