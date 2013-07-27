@@ -198,9 +198,14 @@ public class Deathmatch extends GamePlugin {
 			if (!arena.getGame().equals(game)) {
 				return;
 			}
-			if (!(damager instanceof Player) && ((!(damager instanceof Arrow) || !(((Arrow) damager) instanceof Player)))) {
-					event.setCancelled(true);
-					return;
+			if (damager instanceof Arrow) {
+				LivingEntity entity = ((Arrow) damager).getShooter();
+				if (entity instanceof Player) {
+					String playerName = ((Player) entity).getName();
+					if (ultimateGames.getPlayerManager().isPlayerInArena(playerName) && ultimateGames.getPlayerManager().getPlayerArena(playerName).getStatus() != ArenaStatus.RUNNING) {
+						event.setCancelled(true);
+					}
+				}
 			}
 		}
 	}
@@ -211,14 +216,6 @@ public class Deathmatch extends GamePlugin {
 			String playerName = ((Player) event.getEntity()).getName();
 			if (ultimateGames.getPlayerManager().isPlayerInArena(playerName) && ultimateGames.getPlayerManager().getPlayerArena(playerName).getStatus() != ArenaStatus.RUNNING) {
 				event.setCancelled(true);
-			}
-		} else if (event.getEntity() instanceof Arrow) {
-			LivingEntity entity = ((Arrow) event.getEntity()).getShooter();
-			if (entity instanceof Player) {
-				String playerName = ((Player) event.getEntity()).getName();
-				if (ultimateGames.getPlayerManager().isPlayerInArena(playerName) && ultimateGames.getPlayerManager().getPlayerArena(playerName).getStatus() != ArenaStatus.RUNNING) {
-					event.setCancelled(true);
-				}
 			}
 		}
 	}
