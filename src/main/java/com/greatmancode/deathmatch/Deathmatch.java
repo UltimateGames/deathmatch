@@ -15,6 +15,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -210,6 +211,14 @@ public class Deathmatch extends GamePlugin {
 			String playerName = ((Player) event.getEntity()).getName();
 			if (ultimateGames.getPlayerManager().isPlayerInArena(playerName) && ultimateGames.getPlayerManager().getPlayerArena(playerName).getStatus() != ArenaStatus.RUNNING) {
 				event.setCancelled(true);
+			}
+		} else if (event.getEntity() instanceof Arrow) {
+			LivingEntity entity = ((Arrow) event.getEntity()).getShooter();
+			if (entity instanceof Player) {
+				String playerName = ((Player) event.getEntity()).getName();
+				if (ultimateGames.getPlayerManager().isPlayerInArena(playerName) && ultimateGames.getPlayerManager().getPlayerArena(playerName).getStatus() != ArenaStatus.RUNNING) {
+					event.setCancelled(true);
+				}
 			}
 		}
 	}
