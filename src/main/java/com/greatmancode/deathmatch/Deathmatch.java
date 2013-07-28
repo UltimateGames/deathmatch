@@ -234,7 +234,7 @@ public class Deathmatch extends GamePlugin {
 			if (killer != null) {
 				killerName = killer.getName();
 				if (ultimateGames.getPlayerManager().isPlayerInArena(killer.getName()) && ultimateGames.getPlayerManager().getPlayerArena(killer.getName()).equals(arena)) {
-					killer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 10, 2));
+					killer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20*10, 2));
 				}
 			}
 			for (ArenaScoreboard scoreBoard : ultimateGames.getScoreboardManager().getArenaScoreboards(arena)) {
