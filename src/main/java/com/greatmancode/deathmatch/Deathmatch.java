@@ -1,6 +1,7 @@
 package com.greatmancode.deathmatch;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import me.ampayne2.ultimategames.UltimateGames;
 import me.ampayne2.ultimategames.api.ArenaScoreboard;
@@ -10,9 +11,6 @@ import me.ampayne2.ultimategames.enums.ArenaStatus;
 import me.ampayne2.ultimategames.enums.SignType;
 import me.ampayne2.ultimategames.games.Game;
 import me.ampayne2.ultimategames.players.SpawnPoint;
-import me.ampayne2.ultimategames.signs.ClickInputSign;
-import me.ampayne2.ultimategames.signs.RedstoneInputSign;
-import me.ampayne2.ultimategames.signs.RedstoneOutputSign;
 import me.ampayne2.ultimategames.signs.UGSign;
 
 import org.bukkit.Bukkit;
@@ -95,27 +93,24 @@ public class Deathmatch extends GamePlugin {
 
 	@Override
 	public Boolean endArena(Arena arena) {
-		String highestScorer = "Nobody";
+		String highestScorer = "Unknown";
 		Integer highScore = 0;
-		for (ArenaScoreboard scoreBoard : new ArrayList<ArenaScoreboard>(ultimateGames.getScoreboardManager().getArenaScoreboards(arena))) {
+		List<String> players = arena.getPlayers();
+		for (ArenaScoreboard scoreBoard : ultimateGames.getScoreboardManager().getArenaScoreboards(arena)) {
 			if (scoreBoard.getName().equals("Kills")) {
-				for (String playerName : new ArrayList<String>(arena.getPlayers())) {
+				for (String playerName : players) {
 					Integer playerScore = scoreBoard.getScore(playerName);
 					if (playerScore > highScore) {
 						highestScorer = playerName;
 						highScore = playerScore;
 					}
-					ultimateGames.getPlayerManager().removePlayerFromArena(playerName, arena, false);
 				}
 			}
 		}
 		ultimateGames.getScoreboardManager().removeArenaScoreboard(arena, "Kills");
-		ultimateGames.getMessageManager().broadcastReplacedGameMessageToArena(game, arena, "GameEnd", highestScorer, Integer.toString(highScore));
-		if (ultimateGames.getCountdownManager().isStartingCountdownEnabled(arena)) {
-			ultimateGames.getCountdownManager().stopStartingCountdown(arena);
-		}
-		if (ultimateGames.getCountdownManager().isEndingCountdownEnabled(arena)) {
-			ultimateGames.getCountdownManager().stopEndingCountdown(arena);
+		ultimateGames.getMessageManager().broadcastReplacedGameMessageToArena(game, arena, "GameEnd", highestScorer, game.getGameDescription().getName(), arena.getName());
+		for (String playerName : players) {
+			ultimateGames.getPlayerManager().removePlayerFromArena(playerName, arena, false);
 		}
 		ultimateGames.getArenaManager().openArena(arena);
 		return true;
@@ -151,14 +146,6 @@ public class Deathmatch extends GamePlugin {
 
 	@Override
 	public Boolean removePlayer(Arena arena, String playerName) {
-		if (ultimateGames.getCountdownManager().isStartingCountdownEnabled(arena) && arena.getPlayers().size() <= arena.getMinPlayers()) {
-			ultimateGames.getCountdownManager().stopStartingCountdown(arena);
-		}
-		for (ArenaScoreboard scoreBoard : ultimateGames.getScoreboardManager().getArenaScoreboards(arena)) {
-			if (scoreBoard.getName().equals("Kills")) {
-				scoreBoard.removePlayer(playerName);
-			}
-		}
 		return true;
 	}
 
@@ -176,6 +163,8 @@ public class Deathmatch extends GamePlugin {
 	public void handleInputSignTrigger(UGSign ugSign, SignType signType, Event event) {
 		
 	}
+	
+	
 
 	@SuppressWarnings("deprecation")
 	private void resetInventory(Player player) {
@@ -227,7 +216,8 @@ public class Deathmatch extends GamePlugin {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDeath(PlayerDeathEvent event) {
-		String playerName = ((Player) event.getEntity()).getName();
+		Player player = (Player) event.getEntity();
+		String playerName = player.getName();
 		if (ultimateGames.getPlayerManager().isPlayerInArena(playerName)) {
 			Arena arena = ultimateGames.getPlayerManager().getPlayerArena(playerName);
 			if (!arena.getGame().equals(game)) {
@@ -248,6 +238,7 @@ public class Deathmatch extends GamePlugin {
 				}
 			}
 			event.getDrops().clear();
+			ultimateGames.getUtils().autoRespawn(player);
 		}
 	}
 
