@@ -52,6 +52,7 @@ public class Deathmatch extends GamePlugin {
 
     @Override
     public Boolean loadArena(Arena arena) {
+        ultimateGames.getJettyServer().getHandler().addHandler("/Deathmatch/"+ arena.getName(), new DeathmatchWebHandler(ultimateGames, arena));
         return true;
     }
 
