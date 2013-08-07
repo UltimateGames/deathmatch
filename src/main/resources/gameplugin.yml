@@ -22,7 +22,6 @@ DefaultSettings:
 CustomValues:
   StartWaitTime: 30
   GameTime: 300
-
 Instructions:
 - "Kill others as much as possible in the time given!"
 Messages:
