@@ -19,7 +19,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
@@ -52,7 +51,7 @@ public class Deathmatch extends GamePlugin {
 
     @Override
     public Boolean loadArena(Arena arena) {
-        ultimateGames.addAPIHandler("/Deathmatch/"+ arena.getName(), new DeathmatchWebHandler(ultimateGames, arena));
+        ultimateGames.addAPIHandler("/" + game.getGameDescription().getName() + "/" + arena.getName(), new DeathmatchWebHandler(ultimateGames, arena));
         return true;
     }
 
@@ -91,7 +90,7 @@ public class Deathmatch extends GamePlugin {
 
     @Override
     public void endArena(Arena arena) {
-        String highestScorer = "Unknown";
+        String highestScorer = "Nobody";
         Integer highScore = 0;
         List<String> players = arena.getPlayers();
         for (ArenaScoreboard scoreBoard : ultimateGames.getScoreboardManager().getArenaScoreboards(arena)) {
@@ -126,7 +125,7 @@ public class Deathmatch extends GamePlugin {
 
     @Override
     public Boolean addPlayer(Arena arena, String playerName) {
-        if (arena.getPlayers().size() >= arena.getMinPlayers() && !ultimateGames.getCountdownManager().isStartingCountdownEnabled(arena)) {
+        if (arena.getStatus() == ArenaStatus.OPEN && arena.getPlayers().size() >= arena.getMinPlayers() && !ultimateGames.getCountdownManager().isStartingCountdownEnabled(arena)) {
             ultimateGames.getCountdownManager().createStartingCountdown(arena, ultimateGames.getConfigManager().getGameConfig(game).getConfig().getInt("CustomValues.StartWaitTime"));
         }
         SpawnPoint spawnPoint = ultimateGames.getSpawnpointManager().getRandomSpawnPoint(arena);
@@ -134,6 +133,8 @@ public class Deathmatch extends GamePlugin {
         spawnPoint.teleportPlayer(playerName);
         Player player = Bukkit.getPlayerExact(playerName);
         resetInventory(player);
+        player.setHealth(20.0);
+        player.setFoodLevel(20);
         return true;
     }
 
@@ -144,17 +145,22 @@ public class Deathmatch extends GamePlugin {
 
     @Override
     public void onPlayerDeath(Arena arena, PlayerDeathEvent event) {
-        String killerName = null;
-        Player killer = event.getEntity().getKiller();
-        if (killer != null) {
-            killerName = killer.getName();
-            if (ultimateGames.getPlayerManager().isPlayerInArena(killer.getName()) && ultimateGames.getPlayerManager().getPlayerArena(killer.getName()).equals(arena)) {
-                killer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20 * 2, 5));
-            }
-        }
-        for (ArenaScoreboard scoreBoard : ultimateGames.getScoreboardManager().getArenaScoreboards(arena)) {
-            if (scoreBoard.getName().equals("Kills") && killerName != null) {
-                scoreBoard.setScore(killerName, scoreBoard.getScore(killerName) + 1);
+        if (arena.getStatus() == ArenaStatus.RUNNING) {
+            Player killer = event.getEntity().getKiller();
+            String killerName = null;
+            if (killer != null) {
+                killerName = killer.getName();
+                if (ultimateGames.getPlayerManager().isPlayerInArena(killer.getName()) && ultimateGames.getPlayerManager().getPlayerArena(killer.getName()).equals(arena)) {
+                    killer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20 * 10, 2));
+                }
+                for (ArenaScoreboard scoreBoard : ultimateGames.getScoreboardManager().getArenaScoreboards(arena)) {
+                    if (scoreBoard.getName().equals("Kills")) {
+                        scoreBoard.setScore(killerName, scoreBoard.getScore(killerName) + 1);
+                    }
+                }
+                ultimateGames.getMessageManager().broadcastReplacedGameMessageToArena(game, arena, "Kill", killerName, event.getEntity().getName());
+            } else {
+                ultimateGames.getMessageManager().broadcastReplacedGameMessageToArena(game, arena, "Death", event.getEntity().getName());
             }
         }
         event.getDrops().clear();
@@ -169,7 +175,7 @@ public class Deathmatch extends GamePlugin {
 
     @Override
     public void onEntityDamage(Arena arena, EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player && event.getCause() != DamageCause.ENTITY_ATTACK && event.getCause() != DamageCause.PROJECTILE) {
+        if (arena.getStatus() != ArenaStatus.RUNNING) {
             event.setCancelled(true);
         }
     }

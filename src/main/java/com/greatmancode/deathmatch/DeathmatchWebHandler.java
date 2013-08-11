@@ -12,6 +12,7 @@ public class DeathmatchWebHandler implements WebHandler {
 
     private Arena arena;
     private UltimateGames ug;
+    
     public DeathmatchWebHandler(UltimateGames ug, Arena arena) {
         this.arena = arena;
         this.ug = ug;
