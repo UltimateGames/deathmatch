@@ -135,6 +135,8 @@ public class Deathmatch extends GamePlugin {
         resetInventory(player);
         player.setHealth(20.0);
         player.setFoodLevel(20);
+        player.getInventory().clear();
+        player.getInventory().setArmorContents(null);
         return true;
     }
 
