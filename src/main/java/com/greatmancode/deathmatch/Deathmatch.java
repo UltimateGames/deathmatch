@@ -1,15 +1,15 @@
 package com.greatmancode.deathmatch;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import me.ampayne2.ultimategames.UltimateGames;
-import me.ampayne2.ultimategames.api.ArenaScoreboard;
 import me.ampayne2.ultimategames.api.GamePlugin;
 import me.ampayne2.ultimategames.arenas.Arena;
+import me.ampayne2.ultimategames.arenas.SpawnPoint;
 import me.ampayne2.ultimategames.enums.ArenaStatus;
 import me.ampayne2.ultimategames.games.Game;
-import me.ampayne2.ultimategames.players.SpawnPoint;
+import me.ampayne2.ultimategames.scoreboards.ArenaScoreboard;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
@@ -62,10 +62,7 @@ public class Deathmatch extends GamePlugin {
 
     @Override
     public Boolean isStartPossible(Arena arena) {
-        if (arena.getStatus() == ArenaStatus.OPEN) {
-            return true;
-        }
-        return false;
+        return arena.getStatus() == ArenaStatus.OPEN;
     }
 
     @Override
@@ -76,21 +73,20 @@ public class Deathmatch extends GamePlugin {
     @Override
     public Boolean beginArena(Arena arena) {
         ultimateGames.getCountdownManager().createEndingCountdown(arena, ultimateGames.getConfigManager().getGameConfig(game).getConfig().getInt("CustomValues.GameTime"), true);
-        for (ArenaScoreboard scoreBoard : new ArrayList<ArenaScoreboard>(ultimateGames.getScoreboardManager().getArenaScoreboards(arena))) {
-            ultimateGames.getScoreboardManager().removeArenaScoreboard(arena, scoreBoard.getName());
-        }
+        
         ArenaScoreboard scoreBoard = ultimateGames.getScoreboardManager().createArenaScoreboard(arena, "Kills");
         for (String playerName : arena.getPlayers()) {
             scoreBoard.addPlayer(playerName);
             scoreBoard.setScore(playerName, 0);
         }
         scoreBoard.setVisible(true);
+        
         return true;
     }
 
     @Override
     public void endArena(Arena arena) {
-        String highestScorer = "Nobody";
+        String highestScorer = null;
         Integer highScore = 0;
         List<String> players = arena.getPlayers();
         for (ArenaScoreboard scoreBoard : ultimateGames.getScoreboardManager().getArenaScoreboards(arena)) {
@@ -104,8 +100,9 @@ public class Deathmatch extends GamePlugin {
                 }
             }
         }
-        ultimateGames.getScoreboardManager().removeArenaScoreboard(arena, "Kills");
-        ultimateGames.getMessageManager().broadcastReplacedGameMessage(game, "GameEnd", highestScorer, game.getGameDescription().getName(), arena.getName());
+        if (highestScorer != null) {
+            ultimateGames.getMessageManager().broadcastReplacedGameMessage(game, "GameEnd", highestScorer, game.getGameDescription().getName(), arena.getName());
+        }
     }
 
     @Override
@@ -132,11 +129,12 @@ public class Deathmatch extends GamePlugin {
         spawnPoint.lock(false);
         spawnPoint.teleportPlayer(playerName);
         Player player = Bukkit.getPlayerExact(playerName);
-        resetInventory(player);
+        for (PotionEffect potionEffect : player.getActivePotionEffects()) {
+            player.removePotionEffect(potionEffect.getType());
+        }
         player.setHealth(20.0);
         player.setFoodLevel(20);
-        player.getInventory().clear();
-        player.getInventory().setArmorContents(null);
+        resetInventory(player);
         return true;
     }
 
@@ -216,12 +214,7 @@ public class Deathmatch extends GamePlugin {
     @SuppressWarnings("deprecation")
     private void resetInventory(Player player) {
         player.getInventory().clear();
-        player.getInventory().addItem(new ItemStack(Material.IRON_SWORD, 1), new ItemStack(Material.BOW, 1), new ItemStack(Material.ARROW, 32));
-        String playerName = player.getName();
-        if (ultimateGames.getPlayerManager().isPlayerInArena(playerName)) {
-            Arena arena = ultimateGames.getPlayerManager().getPlayerArena(playerName);
-            player.getInventory().addItem(ultimateGames.getUtils().createInstructionBook(arena.getGame()));
-        }
+        player.getInventory().addItem(new ItemStack(Material.IRON_SWORD, 1), new ItemStack(Material.BOW, 1), new ItemStack(Material.ARROW, 32), ultimateGames.getUtils().createInstructionBook(game));
         player.getInventory().setArmorContents(
                 new ItemStack[] { new ItemStack(Material.LEATHER_BOOTS, 1), new ItemStack(Material.LEATHER_LEGGINGS, 1), new ItemStack(Material.LEATHER_CHESTPLATE, 1),
                         new ItemStack(Material.LEATHER_HELMET, 1) });
