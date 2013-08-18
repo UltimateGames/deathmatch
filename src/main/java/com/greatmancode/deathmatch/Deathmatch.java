@@ -25,7 +25,6 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 public class Deathmatch extends GamePlugin {
 
@@ -76,7 +75,7 @@ public class Deathmatch extends GamePlugin {
         
         ArenaScoreboard scoreBoard = ultimateGames.getScoreboardManager().createArenaScoreboard(arena, "Kills");
         for (String playerName : arena.getPlayers()) {
-            scoreBoard.addPlayer(playerName);
+            scoreBoard.addPlayer(Bukkit.getPlayerExact(playerName));
             scoreBoard.setScore(playerName, 0);
         }
         scoreBoard.setVisible(true);
@@ -121,14 +120,13 @@ public class Deathmatch extends GamePlugin {
     }
 
     @Override
-    public Boolean addPlayer(Arena arena, String playerName) {
+    public Boolean addPlayer(Player player, Arena arena) {
         if (arena.getStatus() == ArenaStatus.OPEN && arena.getPlayers().size() >= arena.getMinPlayers() && !ultimateGames.getCountdownManager().isStartingCountdownEnabled(arena)) {
             ultimateGames.getCountdownManager().createStartingCountdown(arena, ultimateGames.getConfigManager().getGameConfig(game).getConfig().getInt("CustomValues.StartWaitTime"));
         }
         SpawnPoint spawnPoint = ultimateGames.getSpawnpointManager().getRandomSpawnPoint(arena);
         spawnPoint.lock(false);
-        spawnPoint.teleportPlayer(playerName);
-        Player player = Bukkit.getPlayerExact(playerName);
+        spawnPoint.teleportPlayer(player);
         for (PotionEffect potionEffect : player.getActivePotionEffects()) {
             player.removePotionEffect(potionEffect.getType());
         }
@@ -139,8 +137,8 @@ public class Deathmatch extends GamePlugin {
     }
 
     @Override
-    public Boolean removePlayer(Arena arena, String playerName) {
-        return true;
+    public void removePlayer(Player player, Arena arena) {
+        
     }
 
     @Override
@@ -150,9 +148,6 @@ public class Deathmatch extends GamePlugin {
             String killerName = null;
             if (killer != null) {
                 killerName = killer.getName();
-                if (ultimateGames.getPlayerManager().isPlayerInArena(killer.getName()) && ultimateGames.getPlayerManager().getPlayerArena(killer.getName()).equals(arena)) {
-                    killer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20 * 10, 2));
-                }
                 for (ArenaScoreboard scoreBoard : ultimateGames.getScoreboardManager().getArenaScoreboards(arena)) {
                     if (scoreBoard.getName().equals("Kills")) {
                         scoreBoard.setScore(killerName, scoreBoard.getScore(killerName) + 1);
