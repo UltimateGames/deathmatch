@@ -8,11 +8,12 @@ import me.ampayne2.ultimategames.arenas.Arena;
 import me.ampayne2.ultimategames.gson.Gson;
 import me.ampayne2.ultimategames.scoreboards.ArenaScoreboard;
 import me.ampayne2.ultimategames.webapi.WebHandler;
+
 public class DeathmatchWebHandler implements WebHandler {
 
     private Arena arena;
     private UltimateGames ug;
-    
+
     public DeathmatchWebHandler(UltimateGames ug, Arena arena) {
         this.arena = arena;
         this.ug = ug;
@@ -23,14 +24,15 @@ public class DeathmatchWebHandler implements WebHandler {
         Gson gson = new Gson();
         Map<String, Integer> map = new HashMap<String, Integer>();
 
-        for (ArenaScoreboard scoreBoard : ug.getScoreboardManager().getArenaScoreboards(arena)) {
+        ArenaScoreboard scoreBoard = ug.getScoreboardManager().getArenaScoreboard(arena);
+        if (scoreBoard != null) {
             if (scoreBoard.getName().equals("Kills")) {
-                for (String playerName: arena.getPlayers()) {
-                        map.put(playerName, scoreBoard.getScore(playerName));
+                for (String playerName : arena.getPlayers()) {
+                    map.put(playerName, scoreBoard.getScore(playerName));
                 }
-                break;
             }
         }
+
         return gson.toJson(map);
     }
 }
