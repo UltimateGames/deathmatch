@@ -10,6 +10,7 @@ import me.ampayne2.ultimategames.enums.ArenaStatus;
 import me.ampayne2.ultimategames.games.Game;
 import me.ampayne2.ultimategames.scoreboards.ArenaScoreboard;
 
+import me.ampayne2.ultimategames.utils.UGUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
@@ -104,7 +105,7 @@ public class Deathmatch extends GamePlugin {
             }
         }
         if (highestScorer != null) {
-            ultimateGames.getMessageManager().broadcastReplacedGameMessage(game, "GameEnd", highestScorer, game.getName(), arena.getName());
+            ultimateGames.getMessageManager().sendGameMessage(ultimateGames.getServer(), game, "GameEnd", highestScorer, game.getName(), arena.getName());
         }
     }
 
@@ -125,7 +126,7 @@ public class Deathmatch extends GamePlugin {
 
     @Override
     public Boolean addPlayer(Player player, Arena arena) {
-        if (arena.getStatus() == ArenaStatus.OPEN && arena.getPlayers().size() >= arena.getMinPlayers() && !ultimateGames.getCountdownManager().isStartingCountdownEnabled(arena)) {
+        if (arena.getStatus() == ArenaStatus.OPEN && arena.getPlayers().size() >= arena.getMinPlayers() && !ultimateGames.getCountdownManager().hasStartingCountdown(arena)) {
             ultimateGames.getCountdownManager().createStartingCountdown(arena, ultimateGames.getConfigManager().getGameConfig(game).getConfig().getInt("CustomValues.StartWaitTime"));
         }
         PlayerSpawnPoint spawnPoint = ultimateGames.getSpawnpointManager().getRandomSpawnPoint(arena);
@@ -155,7 +156,7 @@ public class Deathmatch extends GamePlugin {
         player.setHealth(20.0);
         player.setFoodLevel(20);
         player.getInventory().clear();
-        player.getInventory().addItem(ultimateGames.getUtils().createInstructionBook(game));
+        player.getInventory().addItem(UGUtils.createInstructionBook(game));
         player.getInventory().setArmorContents(null);
         player.updateInventory();
         return true;
@@ -178,17 +179,17 @@ public class Deathmatch extends GamePlugin {
                 if (scoreBoard != null) {
                     scoreBoard.setScore(killerName, scoreBoard.getScore(killerName) + 1);
                 }
-                ultimateGames.getMessageManager().broadcastReplacedGameMessageToArena(game, arena, "Kill", killerName, event.getEntity().getName());
+                ultimateGames.getMessageManager().sendGameMessage(arena, game, "Kill", killerName, event.getEntity().getName());
             } else {
                 ArenaScoreboard scoreBoard = ultimateGames.getScoreboardManager().getArenaScoreboard(arena);
                 if (scoreBoard != null) {
                     scoreBoard.setScore(playerName, scoreBoard.getScore(playerName) - 1);
                 }
-                ultimateGames.getMessageManager().broadcastReplacedGameMessageToArena(game, arena, "Death", event.getEntity().getName());
+                ultimateGames.getMessageManager().sendGameMessage(arena, game, "Death", event.getEntity().getName());
             }
         }
         event.getDrops().clear();
-        ultimateGames.getUtils().autoRespawn(event.getEntity());
+        UGUtils.autoRespawn(event.getEntity());
     }
 
     @Override
@@ -238,7 +239,7 @@ public class Deathmatch extends GamePlugin {
     @SuppressWarnings("deprecation")
     private void resetInventory(Player player) {
         player.getInventory().clear();
-        player.getInventory().addItem(new ItemStack(Material.IRON_SWORD, 1), new ItemStack(Material.BOW, 1), new ItemStack(Material.ARROW, 32), ultimateGames.getUtils().createInstructionBook(game));
+        player.getInventory().addItem(new ItemStack(Material.IRON_SWORD, 1), new ItemStack(Material.BOW, 1), new ItemStack(Material.ARROW, 32), UGUtils.createInstructionBook(game));
         player.getInventory().setArmorContents(
                 new ItemStack[] { new ItemStack(Material.LEATHER_BOOTS, 1), new ItemStack(Material.LEATHER_LEGGINGS, 1), new ItemStack(Material.LEATHER_CHESTPLATE, 1),
                         new ItemStack(Material.LEATHER_HELMET, 1) });
