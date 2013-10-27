@@ -106,6 +106,8 @@ public class Deathmatch extends GamePlugin {
         }
         if (highestScorer != null) {
             ultimateGames.getMessageManager().sendGameMessage(ultimateGames.getServer(), game, "GameEnd", highestScorer, game.getName(), arena.getName());
+            ultimateGames.getPointManager().addPoint(game, highestScorer, "store", 25);
+            ultimateGames.getPointManager().addPoint(game, highestScorer, "win", 1);
         }
     }
 
@@ -180,6 +182,8 @@ public class Deathmatch extends GamePlugin {
                     scoreBoard.setScore(killerName, scoreBoard.getScore(killerName) + 1);
                 }
                 ultimateGames.getMessageManager().sendGameMessage(arena, game, "Kill", killerName, event.getEntity().getName());
+                ultimateGames.getPointManager().addPoint(game, killerName, "kill", 1);
+                ultimateGames.getPointManager().addPoint(game, killerName, "store", 2);
             } else {
                 ArenaScoreboard scoreBoard = ultimateGames.getScoreboardManager().getArenaScoreboard(arena);
                 if (scoreBoard != null) {
@@ -187,6 +191,7 @@ public class Deathmatch extends GamePlugin {
                 }
                 ultimateGames.getMessageManager().sendGameMessage(arena, game, "Death", event.getEntity().getName());
             }
+            ultimateGames.getPointManager().addPoint(game, event.getEntity().getName(), "death", 1);
         }
         event.getDrops().clear();
         UGUtils.autoRespawn(event.getEntity());
