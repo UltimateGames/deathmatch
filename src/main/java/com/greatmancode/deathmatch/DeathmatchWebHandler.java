@@ -1,13 +1,13 @@
 package com.greatmancode.deathmatch;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import me.ampayne2.ultimategames.UltimateGames;
 import me.ampayne2.ultimategames.arenas.Arena;
 import me.ampayne2.ultimategames.arenas.scoreboards.ArenaScoreboard;
 import me.ampayne2.ultimategames.gson.Gson;
 import me.ampayne2.ultimategames.webapi.WebHandler;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class DeathmatchWebHandler implements WebHandler {
 
@@ -24,7 +24,7 @@ public class DeathmatchWebHandler implements WebHandler {
         Gson gson = new Gson();
         Map<String, Integer> map = new HashMap<String, Integer>();
 
-        ArenaScoreboard scoreBoard = ug.getScoreboardManager().getArenaScoreboard(arena);
+        ArenaScoreboard scoreBoard = ug.getScoreboardManager().getScoreboard(arena);
         if (scoreBoard != null) {
             if (scoreBoard.getName().equals("Kills")) {
                 for (String playerName : arena.getPlayers()) {

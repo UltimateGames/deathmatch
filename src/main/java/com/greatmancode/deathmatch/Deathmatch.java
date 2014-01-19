@@ -1,7 +1,5 @@
 package com.greatmancode.deathmatch;
 
-import java.util.List;
-
 import me.ampayne2.ultimategames.UltimateGames;
 import me.ampayne2.ultimategames.api.GamePlugin;
 import me.ampayne2.ultimategames.arenas.Arena;
@@ -9,7 +7,6 @@ import me.ampayne2.ultimategames.arenas.ArenaStatus;
 import me.ampayne2.ultimategames.arenas.scoreboards.ArenaScoreboard;
 import me.ampayne2.ultimategames.arenas.spawnpoints.PlayerSpawnPoint;
 import me.ampayne2.ultimategames.games.Game;
-
 import me.ampayne2.ultimategames.utils.UGUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -27,8 +24,9 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
-public class Deathmatch extends GamePlugin {
+import java.util.List;
 
+public class Deathmatch extends GamePlugin {
     private UltimateGames ultimateGames;
     private Game game;
 
@@ -77,9 +75,9 @@ public class Deathmatch extends GamePlugin {
 
     @Override
     public boolean beginArena(Arena arena) {
-        ultimateGames.getCountdownManager().createEndingCountdown(arena, ultimateGames.getConfigManager().getGameConfig(game).getConfig().getInt("CustomValues.GameTime"), true);
+        ultimateGames.getCountdownManager().createEndingCountdown(arena, ultimateGames.getConfigManager().getGameConfig(game).getInt("CustomValues.GameTime"), true);
 
-        ArenaScoreboard scoreBoard = ultimateGames.getScoreboardManager().createArenaScoreboard(arena, "Kills");
+        ArenaScoreboard scoreBoard = ultimateGames.getScoreboardManager().createScoreboard(arena, "Kills");
         for (String playerName : arena.getPlayers()) {
             scoreBoard.addPlayer(Bukkit.getPlayerExact(playerName));
             scoreBoard.setScore(playerName, 0);
@@ -94,7 +92,7 @@ public class Deathmatch extends GamePlugin {
         String highestScorer = null;
         Integer highScore = 0;
         List<String> players = arena.getPlayers();
-        ArenaScoreboard scoreBoard = ultimateGames.getScoreboardManager().getArenaScoreboard(arena);
+        ArenaScoreboard scoreBoard = ultimateGames.getScoreboardManager().getScoreboard(arena);
         if (scoreBoard != null) {
             for (String playerName : players) {
                 Integer playerScore = scoreBoard.getScore(playerName);
@@ -105,7 +103,7 @@ public class Deathmatch extends GamePlugin {
             }
         }
         if (highestScorer != null) {
-            ultimateGames.getMessageManager().sendGameMessage(ultimateGames.getServer(), game, "GameEnd", highestScorer, game.getName(), arena.getName());
+            ultimateGames.getMessenger().sendGameMessage(ultimateGames.getServer(), game, "GameEnd", highestScorer, game.getName(), arena.getName());
             ultimateGames.getPointManager().addPoint(game, highestScorer, "store", 25);
             ultimateGames.getPointManager().addPoint(game, highestScorer, "win", 1);
         }
@@ -129,7 +127,7 @@ public class Deathmatch extends GamePlugin {
     @Override
     public boolean addPlayer(Player player, Arena arena) {
         if (arena.getStatus() == ArenaStatus.OPEN && arena.getPlayers().size() >= arena.getMinPlayers() && !ultimateGames.getCountdownManager().hasStartingCountdown(arena)) {
-            ultimateGames.getCountdownManager().createStartingCountdown(arena, ultimateGames.getConfigManager().getGameConfig(game).getConfig().getInt("CustomValues.StartWaitTime"));
+            ultimateGames.getCountdownManager().createStartingCountdown(arena, ultimateGames.getConfigManager().getGameConfig(game).getInt("CustomValues.StartWaitTime"));
         }
         PlayerSpawnPoint spawnPoint = ultimateGames.getSpawnpointManager().getRandomSpawnPoint(arena);
         spawnPoint.lock(false);
@@ -177,19 +175,19 @@ public class Deathmatch extends GamePlugin {
             String killerName = null;
             if (killer != null) {
                 killerName = killer.getName();
-                ArenaScoreboard scoreBoard = ultimateGames.getScoreboardManager().getArenaScoreboard(arena);
+                ArenaScoreboard scoreBoard = ultimateGames.getScoreboardManager().getScoreboard(arena);
                 if (scoreBoard != null) {
                     scoreBoard.setScore(killerName, scoreBoard.getScore(killerName) + 1);
                 }
-                ultimateGames.getMessageManager().sendGameMessage(arena, game, "Kill", killerName, event.getEntity().getName());
+                ultimateGames.getMessenger().sendGameMessage(arena, game, "Kill", killerName, event.getEntity().getName());
                 ultimateGames.getPointManager().addPoint(game, killerName, "kill", 1);
                 ultimateGames.getPointManager().addPoint(game, killerName, "store", 2);
             } else {
-                ArenaScoreboard scoreBoard = ultimateGames.getScoreboardManager().getArenaScoreboard(arena);
+                ArenaScoreboard scoreBoard = ultimateGames.getScoreboardManager().getScoreboard(arena);
                 if (scoreBoard != null) {
                     scoreBoard.setScore(playerName, scoreBoard.getScore(playerName) - 1);
                 }
-                ultimateGames.getMessageManager().sendGameMessage(arena, game, "Death", event.getEntity().getName());
+                ultimateGames.getMessenger().sendGameMessage(arena, game, "Death", event.getEntity().getName());
             }
             ultimateGames.getPointManager().addPoint(game, event.getEntity().getName(), "death", 1);
         }
