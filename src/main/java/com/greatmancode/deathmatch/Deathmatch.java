@@ -34,6 +34,7 @@ public class Deathmatch extends GamePlugin {
     public boolean loadGame(UltimateGames ultimateGames, Game game) {
         this.ultimateGames = ultimateGames;
         this.game = game;
+        game.setMessages(DMessage.KILL);
         return true;
     }
 
@@ -103,7 +104,7 @@ public class Deathmatch extends GamePlugin {
             }
         }
         if (highestScorer != null) {
-            ultimateGames.getMessenger().sendGameMessage(Bukkit.getServer(), game, "GameEnd", highestScorer, game.getName(), arena.getName());
+            ultimateGames.getMessenger().sendGameMessage(Bukkit.getServer(), game, DMessage.GAME_END, highestScorer, game.getName(), arena.getName());
             ultimateGames.getPointManager().addPoint(game, highestScorer, "store", 25);
             ultimateGames.getPointManager().addPoint(game, highestScorer, "win", 1);
         }
@@ -171,7 +172,7 @@ public class Deathmatch extends GamePlugin {
                 if (scoreBoard != null) {
                     scoreBoard.setScore(killerName, scoreBoard.getScore(killerName) + 1);
                 }
-                ultimateGames.getMessenger().sendGameMessage(arena, game, "Kill", killerName, event.getEntity().getName());
+                ultimateGames.getMessenger().sendGameMessage(arena, game, DMessage.KILL, killerName, event.getEntity().getName());
                 ultimateGames.getPointManager().addPoint(game, killerName, "kill", 1);
                 ultimateGames.getPointManager().addPoint(game, killerName, "store", 2);
             } else {
@@ -179,7 +180,7 @@ public class Deathmatch extends GamePlugin {
                 if (scoreBoard != null) {
                     scoreBoard.setScore(playerName, scoreBoard.getScore(playerName) - 1);
                 }
-                ultimateGames.getMessenger().sendGameMessage(arena, game, "Death", event.getEntity().getName());
+                ultimateGames.getMessenger().sendGameMessage(arena, game, DMessage.DEATH, event.getEntity().getName());
             }
             ultimateGames.getPointManager().addPoint(game, event.getEntity().getName(), "death", 1);
         }

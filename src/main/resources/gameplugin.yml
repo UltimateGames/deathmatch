@@ -22,7 +22,3 @@ CustomValues:
   GameTime: 300
 Instructions:
 - "Kill others as much as possible in the time given!"
-Messages:
-  GameEnd: "%s won %s on arena %s!"
-  Kill: "%s killed %s!"
-  Death: "%s died!"
