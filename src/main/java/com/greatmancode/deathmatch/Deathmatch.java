@@ -34,7 +34,7 @@ public class Deathmatch extends GamePlugin {
     public boolean loadGame(UltimateGames ultimateGames, Game game) {
         this.ultimateGames = ultimateGames;
         this.game = game;
-        game.setMessages(DMessage.KILL);
+        game.setMessages(DMessage.class);
         return true;
     }
 
