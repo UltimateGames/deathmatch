@@ -39,14 +39,15 @@ public class Deathmatch extends GamePlugin {
         game.setMessages(DMessage.class);
 
         KILLCOIN = new Killcoin(ultimateGames, game, this);
-        ultimateGames.getGameItemManager().registerGameItem(game, KILLCOIN);
+        ultimateGames.getGameItemManager()
+                .registerGameItem(game, KILLCOIN)
+                .registerGameItem(game, new Flashbang(ultimateGames));
 
         return true;
     }
 
     @Override
     public void unloadGame() {
-
     }
 
     @Override
