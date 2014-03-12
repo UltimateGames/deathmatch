@@ -30,11 +30,17 @@ public class Deathmatch extends GamePlugin {
     private UltimateGames ultimateGames;
     private Game game;
 
+    private Killcoin KILLCOIN;
+
     @Override
     public boolean loadGame(UltimateGames ultimateGames, Game game) {
         this.ultimateGames = ultimateGames;
         this.game = game;
         game.setMessages(DMessage.class);
+
+        KILLCOIN = new Killcoin(ultimateGames, game, this);
+        ultimateGames.getGameItemManager().registerGameItem(game, KILLCOIN);
+
         return true;
     }
 
@@ -101,6 +107,7 @@ public class Deathmatch extends GamePlugin {
                     highestScorer = playerName;
                     highScore = playerScore;
                 }
+                KILLCOIN.resetCoins(playerName);
             }
         }
         if (highestScorer != null) {
@@ -133,6 +140,9 @@ public class Deathmatch extends GamePlugin {
         }
         player.setHealth(20.0);
         player.setFoodLevel(20);
+        if (ultimateGames.getPointManager().hasPerk(game, player.getName(), "StartWithCoins")) {
+            KILLCOIN.addCoins(player.getName(), 5);
+        }
         resetInventory(player);
         return true;
     }
@@ -175,6 +185,8 @@ public class Deathmatch extends GamePlugin {
                 ultimateGames.getMessenger().sendGameMessage(arena, game, DMessage.KILL, killerName, event.getEntity().getName());
                 ultimateGames.getPointManager().addPoint(game, killerName, "kill", 1);
                 ultimateGames.getPointManager().addPoint(game, killerName, "store", 2);
+                KILLCOIN.addCoin(killerName);
+                KILLCOIN.updateCoins(killer);
             } else {
                 Scoreboard scoreBoard = ultimateGames.getScoreboardManager().getScoreboard(arena);
                 if (scoreBoard != null) {
@@ -235,8 +247,9 @@ public class Deathmatch extends GamePlugin {
     @SuppressWarnings("deprecation")
     private void resetInventory(Player player) {
         player.getInventory().clear();
-        player.getInventory().addItem(new ItemStack(Material.IRON_SWORD, 1), new ItemStack(Material.BOW, 1), new ItemStack(Material.ARROW, 32), UGUtils.createInstructionBook(game));
+        player.getInventory().addItem(UGUtils.createInstructionBook(game), new ItemStack(Material.IRON_SWORD, 1), new ItemStack(Material.BOW, 1), new ItemStack(Material.ARROW, 32));
         player.getInventory().setArmorContents(new ItemStack[]{new ItemStack(Material.LEATHER_BOOTS, 1), new ItemStack(Material.LEATHER_LEGGINGS, 1), new ItemStack(Material.LEATHER_CHESTPLATE, 1), new ItemStack(Material.LEATHER_HELMET, 1)});
+        KILLCOIN.updateCoins(player);
         player.updateInventory();
     }
 }
