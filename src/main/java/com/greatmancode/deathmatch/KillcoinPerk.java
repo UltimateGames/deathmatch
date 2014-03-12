@@ -57,6 +57,16 @@ public enum KillcoinPerk {
             player.getInventory().addItem(getIcon().clone());
             player.updateInventory();
         }
+    },
+    @SuppressWarnings("deprecation")
+    BROADSWORD("Broadsword", "Increase your sword strength!", new ItemStack(Material.DIAMOND_SWORD), 5, true, "Broadsword") {
+        @Override
+        public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
+            super.activate(ultimateGames, deathmatch, arena, player);
+            player.getInventory().remove(Material.IRON_SWORD);
+            player.getInventory().addItem(getIcon().clone());
+            player.updateInventory();
+        }
     };
 
     private final String name;
@@ -229,5 +239,7 @@ public enum KillcoinPerk {
         poison.apply(POISON_POTION.getIcon());
 
         LONGBOW.getIcon().addEnchantment(Enchantment.ARROW_DAMAGE, 2);
+
+        BROADSWORD.getIcon().addEnchantment(Enchantment.DAMAGE_ALL, 1);
     }
 }
