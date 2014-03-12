@@ -220,8 +220,14 @@ public enum KillcoinPerk {
     }
 
     static {
-        new Potion(PotionType.INSTANT_DAMAGE, 1).apply(DAMAGE_POTION.getIcon());
-        new Potion(PotionType.POISON, 1).apply(POISON_POTION.getIcon());
+        Potion damage = new Potion(PotionType.INSTANT_DAMAGE, 1);
+        damage.setSplash(true);
+        damage.apply(DAMAGE_POTION.getIcon());
+
+        Potion poison = new Potion(PotionType.POISON, 1);
+        poison.setSplash(true);
+        poison.apply(POISON_POTION.getIcon());
+
         LONGBOW.getIcon().addEnchantment(Enchantment.ARROW_DAMAGE, 2);
     }
 }
