@@ -196,6 +196,7 @@ public class Deathmatch extends GamePlugin {
             }
             ultimateGames.getPointManager().addPoint(game, event.getEntity().getName(), "death", 1);
         }
+        KillcoinPerk.deactivateAll(ultimateGames, arena, event.getEntity());
         event.getDrops().clear();
         UGUtils.autoRespawn(ultimateGames.getPlugin(), event.getEntity());
     }
