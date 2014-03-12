@@ -181,5 +181,6 @@ public class Killcoin extends GameItem implements Listener {
         ITEM = new ItemStack(Material.EMERALD);
         ItemMeta meta = ITEM.getItemMeta();
         meta.setDisplayName(ChatColor.GOLD.toString() + ChatColor.BOLD + "Spoils of War");
+        ITEM.setItemMeta(meta);
     }
 }
