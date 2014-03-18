@@ -48,24 +48,30 @@ public enum KillcoinPerk {
             player.getInventory().addItem(getIcon().clone());
         }
     },
-    @SuppressWarnings("deprecation")
     LONGBOW("Longbow", "Increase your bows power!", new ItemStack(Material.BOW), 4, true, "Longbow") {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
             player.getInventory().remove(Material.BOW);
             player.getInventory().addItem(getIcon().clone());
-            player.updateInventory();
         }
     },
-    @SuppressWarnings("deprecation")
     BROADSWORD("Broadsword", "Increase your sword strength!", new ItemStack(Material.DIAMOND_SWORD), 5, true, "Broadsword") {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
             player.getInventory().remove(Material.IRON_SWORD);
             player.getInventory().addItem(getIcon().clone());
-            player.updateInventory();
+        }
+    },
+    TANK("Tank", "Increase your damage resistance!", new ItemStack(Material.DIAMOND_CHESTPLATE), 10, true, "Tank") {
+        @Override
+        public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
+            super.activate(ultimateGames, deathmatch, arena, player);
+            player.getInventory().setHelmet(new ItemStack(Material.DIAMOND_HELMET));
+            player.getInventory().setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
+            player.getInventory().setLeggings(new ItemStack(Material.DIAMOND_LEGGINGS));
+            player.getInventory().setBoots(new ItemStack(Material.DIAMOND_BOOTS));
         }
     };
 
