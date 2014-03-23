@@ -109,12 +109,18 @@ public class Deathmatch extends GamePlugin {
                     highScore = playerScore;
                 }
                 KILLCOIN.resetCoins(playerName);
+                KillcoinPerk.deactivateAll(ultimateGames, arena, Bukkit.getPlayerExact(playerName));
             }
         }
         if (highestScorer != null) {
             ultimateGames.getMessenger().sendGameMessage(Bukkit.getServer(), game, DMessage.GAME_END, highestScorer, game.getName(), arena.getName());
             ultimateGames.getPointManager().addPoint(game, highestScorer, "store", 25);
             ultimateGames.getPointManager().addPoint(game, highestScorer, "win", 1);
+            for (String playerName : players) {
+                if (!playerName.equals(highestScorer)) {
+                    ultimateGames.getPointManager().addPoint(game, playerName, "store", 5);
+                }
+            }
         }
     }
 
