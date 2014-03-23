@@ -108,8 +108,6 @@ public class Deathmatch extends GamePlugin {
                     highestScorer = playerName;
                     highScore = playerScore;
                 }
-                KILLCOIN.resetCoins(playerName);
-                KillcoinPerk.deactivateAll(ultimateGames, arena, Bukkit.getPlayerExact(playerName));
             }
         }
         if (highestScorer != null) {
@@ -156,6 +154,8 @@ public class Deathmatch extends GamePlugin {
 
     @Override
     public void removePlayer(Player player, Arena arena) {
+        KILLCOIN.resetCoins(player.getName());
+        KillcoinPerk.deactivateAll(ultimateGames, arena, player);
     }
 
     @SuppressWarnings("deprecation")
@@ -192,7 +192,11 @@ public class Deathmatch extends GamePlugin {
                 ultimateGames.getMessenger().sendGameMessage(arena, game, DMessage.KILL, killerName, event.getEntity().getName());
                 ultimateGames.getPointManager().addPoint(game, killerName, "kill", 1);
                 ultimateGames.getPointManager().addPoint(game, killerName, "store", 2);
-                KILLCOIN.addCoin(killerName);
+                if (KillcoinPerk.DOUBLE_KILLCOINS.isActivated(killerName)) {
+                    KILLCOIN.addCoins(killerName, 2);
+                } else {
+                    KILLCOIN.addCoin(killerName);
+                }
                 KILLCOIN.updateCoins(killer);
             } else {
                 Scoreboard scoreBoard = ultimateGames.getScoreboardManager().getScoreboard(arena);
