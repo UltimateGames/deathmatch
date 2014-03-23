@@ -172,26 +172,6 @@ public enum KillcoinPerk {
      * Armor Related Perks
      */
 
-    TANK("Tank", "Increase your damage resistance!", new ItemStack(Material.IRON_CHESTPLATE), 8, true, "Tank") {
-        @Override
-        public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
-            super.activate(ultimateGames, deathmatch, arena, player);
-            ItemStack helmet = new ItemStack(Material.IRON_HELMET);
-            ItemStack chestplate = new ItemStack(Material.IRON_CHESTPLATE);
-            ItemStack leggings = new ItemStack(Material.IRON_LEGGINGS);
-            ItemStack boots = new ItemStack(Material.IRON_BOOTS);
-            if (CACTUS_ARMOR.isActivated(player.getName())) {
-                helmet.addEnchantment(Enchantment.THORNS, 2);
-                chestplate.addEnchantment(Enchantment.THORNS, 2);
-                leggings.addEnchantment(Enchantment.THORNS, 2);
-                boots.addEnchantment(Enchantment.THORNS, 2);
-            }
-            player.getInventory().setHelmet(helmet);
-            player.getInventory().setChestplate(chestplate);
-            player.getInventory().setLeggings(leggings);
-            player.getInventory().setBoots(boots);
-        }
-    },
     CACTUS_ARMOR("Cactus Armor", "Hurt enemies when they attack!", UGUtils.colorArmor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.fromRGB(127, 204, 25)), 4, true, "CactusArmor") {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
@@ -216,6 +196,26 @@ public enum KillcoinPerk {
             chestplate.addEnchantment(Enchantment.THORNS, 2);
             leggings.addEnchantment(Enchantment.THORNS, 2);
             boots.addEnchantment(Enchantment.THORNS, 2);
+            player.getInventory().setHelmet(helmet);
+            player.getInventory().setChestplate(chestplate);
+            player.getInventory().setLeggings(leggings);
+            player.getInventory().setBoots(boots);
+        }
+    },
+    TANK("Tank", "Increase your damage resistance!", new ItemStack(Material.IRON_CHESTPLATE), 8, true, "Tank") {
+        @Override
+        public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
+            super.activate(ultimateGames, deathmatch, arena, player);
+            ItemStack helmet = new ItemStack(Material.IRON_HELMET);
+            ItemStack chestplate = new ItemStack(Material.IRON_CHESTPLATE);
+            ItemStack leggings = new ItemStack(Material.IRON_LEGGINGS);
+            ItemStack boots = new ItemStack(Material.IRON_BOOTS);
+            if (CACTUS_ARMOR.isActivated(player.getName())) {
+                helmet.addEnchantment(Enchantment.THORNS, 2);
+                chestplate.addEnchantment(Enchantment.THORNS, 2);
+                leggings.addEnchantment(Enchantment.THORNS, 2);
+                boots.addEnchantment(Enchantment.THORNS, 2);
+            }
             player.getInventory().setHelmet(helmet);
             player.getInventory().setChestplate(chestplate);
             player.getInventory().setLeggings(leggings);
