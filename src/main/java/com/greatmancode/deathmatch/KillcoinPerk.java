@@ -47,14 +47,14 @@ public enum KillcoinPerk {
             player.getInventory().addItem(getIcon().clone());
         }
     },
-    HEALTH_POTION("Health Potion", "Get a Health Potion!", new ItemStack(Material.POTION), 2, false) {
+    HEALTH_POTION("Health Potion", "Get a Health Potion!", new ItemStack(Material.POTION), 1, false) {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
             player.getInventory().addItem(getIcon().clone());
         }
     },
-    STRENGTH("Strength", "Increase your strength!", new ItemStack(Material.POTION), 3, true) {
+    STRENGTH("Strength", "Increase your strength!", new ItemStack(Material.POTION), 8, true) {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
