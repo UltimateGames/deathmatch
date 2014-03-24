@@ -4,10 +4,7 @@ import me.ampayne2.ultimategames.api.UltimateGames;
 import me.ampayne2.ultimategames.api.arenas.Arena;
 import me.ampayne2.ultimategames.api.effects.GameSound;
 import me.ampayne2.ultimategames.api.utils.UGUtils;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -57,7 +54,7 @@ public enum KillcoinPerk {
             player.getInventory().addItem(getIcon().clone());
         }
     },
-    STRENGTH("Strength", "Increase your strength!", new ItemStack(Material.POTION), 4, true) {
+    STRENGTH("Strength", "Increase your strength!", new ItemStack(Material.POTION), 3, true) {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
@@ -192,10 +189,10 @@ public enum KillcoinPerk {
                 leggings = UGUtils.colorArmor(new ItemStack(Material.LEATHER_LEGGINGS), color);
                 boots = UGUtils.colorArmor(new ItemStack(Material.LEATHER_BOOTS), color);
             }
-            helmet.addEnchantment(Enchantment.THORNS, 2);
-            chestplate.addEnchantment(Enchantment.THORNS, 2);
-            leggings.addEnchantment(Enchantment.THORNS, 2);
-            boots.addEnchantment(Enchantment.THORNS, 2);
+            helmet.addEnchantment(Enchantment.THORNS, 5);
+            chestplate.addEnchantment(Enchantment.THORNS, 5);
+            leggings.addEnchantment(Enchantment.THORNS, 5);
+            boots.addEnchantment(Enchantment.THORNS, 5);
             player.getInventory().setHelmet(helmet);
             player.getInventory().setChestplate(chestplate);
             player.getInventory().setLeggings(leggings);
@@ -211,10 +208,10 @@ public enum KillcoinPerk {
             ItemStack leggings = new ItemStack(Material.IRON_LEGGINGS);
             ItemStack boots = new ItemStack(Material.IRON_BOOTS);
             if (CACTUS_ARMOR.isActivated(player.getName())) {
-                helmet.addEnchantment(Enchantment.THORNS, 2);
-                chestplate.addEnchantment(Enchantment.THORNS, 2);
-                leggings.addEnchantment(Enchantment.THORNS, 2);
-                boots.addEnchantment(Enchantment.THORNS, 2);
+                helmet.addEnchantment(Enchantment.THORNS, 5);
+                chestplate.addEnchantment(Enchantment.THORNS, 5);
+                leggings.addEnchantment(Enchantment.THORNS, 5);
+                boots.addEnchantment(Enchantment.THORNS, 5);
             }
             player.getInventory().setHelmet(helmet);
             player.getInventory().setChestplate(chestplate);
@@ -257,6 +254,7 @@ public enum KillcoinPerk {
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
             Wolf wolf = (Wolf) player.getWorld().spawnEntity(player.getLocation(), EntityType.WOLF);
+            wolf.setCollarColor(DyeColor.BLACK);
             wolf.setOwner(player);
             wolf.setAngry(true);
             UGUtils.increasePotionEffect(wolf, PotionEffectType.INCREASE_DAMAGE);
