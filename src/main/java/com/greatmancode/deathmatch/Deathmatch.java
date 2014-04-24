@@ -9,7 +9,6 @@ import me.ampayne2.ultimategames.api.games.Game;
 import me.ampayne2.ultimategames.api.games.GamePlugin;
 import me.ampayne2.ultimategames.api.utils.UGUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -248,49 +247,53 @@ public class Deathmatch extends GamePlugin {
 
     @Override
     public void onPlayerInteract(Arena arena, PlayerInteractEvent event) {
-        if (arena.getStatus() == ArenaStatus.RUNNING && event.getItem() != null) {
-            ItemStack item = event.getItem();
-            if (item.getType() == Material.BOW) {
-                Player player = event.getPlayer();
-                if (!player.getInventory().contains(Material.ARROW)) {
-                    if (event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
-                        ultimateGames.getMessenger().sendGameMessage(player, game, DMessage.OUT_OF_ARROWS);
-                    } else if (event.getAction().equals(Action.LEFT_CLICK_AIR)) {
-                        if (killcoin.getCoins(player.getName()) >= KillcoinPerk.ARROWS.getCost()) {
-                            KillcoinPerk.ARROWS.activate(ultimateGames, this, arena, player);
-                        } else {
-                            ultimateGames.getMessenger().sendGameMessage(event.getPlayer(), game, DMessage.PERK_NOTENOUGHCOINS, KillcoinPerk.ARROWS.getName());
+        if (event.getItem() != null) {
+            if (arena.getStatus() == ArenaStatus.RUNNING) {
+                ItemStack item = event.getItem();
+                if (item.getType() == Material.BOW) {
+                    Player player = event.getPlayer();
+                    if (!player.getInventory().contains(Material.ARROW)) {
+                        if (event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+                            ultimateGames.getMessenger().sendGameMessage(player, game, DMessage.OUT_OF_ARROWS);
+                        } else if (event.getAction().equals(Action.LEFT_CLICK_AIR)) {
+                            if (killcoin.getCoins(player.getName()) >= KillcoinPerk.ARROWS.getCost()) {
+                                KillcoinPerk.ARROWS.activate(ultimateGames, this, arena, player);
+                            } else {
+                                ultimateGames.getMessenger().sendGameMessage(event.getPlayer(), game, DMessage.PERK_NOTENOUGHCOINS, KillcoinPerk.ARROWS.getName());
+                            }
+                        }
+                    }
+                } else {
+                    for (KillcoinPerk killcoinPerk : KillcoinPerk.class.getEnumConstants()) {
+                        if (!killcoinPerk.showInMenu() && item.getType() == killcoinPerk.getIcon().getType()) {
+                            if (item.getType() == Material.POTION) {
+                                Potion potion = Potion.fromItemStack(item);
+                                if (!((potion.getType() == PotionType.INSTANT_DAMAGE && killcoinPerk == KillcoinPerk.DAMAGE_POTION) || (potion.getType() == PotionType.POISON && killcoinPerk == KillcoinPerk.POISON_POTION))) {
+                                    continue;
+                                }
+                            }
+                            String playerName = event.getPlayer().getName();
+                            if (killcoin.getCoins(playerName) < killcoinPerk.getCost()) {
+                                ultimateGames.getMessenger().sendGameMessage(event.getPlayer(), game, DMessage.PERK_NOTENOUGHCOINS, killcoinPerk.getName());
+                            } else if (killcoinPerk.isActivated(playerName)) {
+                                ultimateGames.getMessenger().sendGameMessage(event.getPlayer(), game, DMessage.PERK_ALREADYACTIVE, killcoinPerk.getName());
+                            } else {
+                                if (killcoinPerk.canActivate(ultimateGames, this, arena, event.getPlayer())) {
+                                    killcoinPerk.activate(ultimateGames, this, arena, event.getPlayer());
+                                    killcoin.removeCoins(playerName, killcoinPerk.getCost());
+                                    killcoin.updateCoins(event.getPlayer());
+                                    return;
+                                } else {
+                                    ultimateGames.getMessenger().sendGameMessage(event.getPlayer(), game, DMessage.PERK_CANNOTACTIVATE, killcoinPerk.getName());
+                                }
+                            }
+                            event.setCancelled(true);
+                            break;
                         }
                     }
                 }
             } else {
-                for (KillcoinPerk killcoinPerk : KillcoinPerk.class.getEnumConstants()) {
-                    if (!killcoinPerk.showInMenu() && item.getType() == killcoinPerk.getIcon().getType()) {
-                        if (item.getType() == Material.POTION) {
-                            Potion potion = Potion.fromItemStack(item);
-                            if (!((potion.getType() == PotionType.INSTANT_DAMAGE && killcoinPerk == KillcoinPerk.DAMAGE_POTION) || (potion.getType() == PotionType.POISON && killcoinPerk == KillcoinPerk.POISON_POTION))) {
-                                continue;
-                            }
-                        }
-                        String playerName = event.getPlayer().getName();
-                        if (killcoin.getCoins(playerName) < killcoinPerk.getCost()) {
-                            ultimateGames.getMessenger().sendGameMessage(event.getPlayer(), game, DMessage.PERK_NOTENOUGHCOINS, killcoinPerk.getName());
-                        } else if (killcoinPerk.isActivated(playerName)) {
-                            ultimateGames.getMessenger().sendGameMessage(event.getPlayer(), game, DMessage.PERK_ALREADYACTIVE, killcoinPerk.getName());
-                        } else {
-                            if (killcoinPerk.canActivate(ultimateGames, this, arena, event.getPlayer())) {
-                                killcoinPerk.activate(ultimateGames, this, arena, event.getPlayer());
-                                killcoin.removeCoins(playerName, killcoinPerk.getCost());
-                                killcoin.updateCoins(event.getPlayer());
-                                return;
-                            } else {
-                                ultimateGames.getMessenger().sendGameMessage(event.getPlayer(), game, DMessage.PERK_CANNOTACTIVATE, killcoinPerk.getName());
-                            }
-                        }
-                        event.setCancelled(true);
-                        break;
-                    }
-                }
+                event.setCancelled(true);
             }
         }
     }
@@ -313,15 +316,7 @@ public class Deathmatch extends GamePlugin {
     @SuppressWarnings("deprecation")
     private void resetInventory(Player player) {
         player.getInventory().clear();
-        ItemStack damagePotion = KillcoinPerk.DAMAGE_POTION.getIcon().clone();
-        UGUtils.nameItem(damagePotion, ChatColor.AQUA + KillcoinPerk.DAMAGE_POTION.getName());
-        UGUtils.setLore(damagePotion, ChatColor.GOLD + "Cost: " + KillcoinPerk.DAMAGE_POTION.getCost());
-
-        ItemStack poisonPotion = KillcoinPerk.POISON_POTION.getIcon().clone();
-        UGUtils.nameItem(poisonPotion, ChatColor.AQUA + KillcoinPerk.POISON_POTION.getName());
-        UGUtils.setLore(poisonPotion, ChatColor.GOLD + "Cost: " + KillcoinPerk.POISON_POTION.getCost());
-
-        player.getInventory().addItem(new ItemStack(Material.IRON_SWORD, 1), new ItemStack(Material.BOW, 1), damagePotion, poisonPotion);
+        player.getInventory().addItem(new ItemStack(Material.IRON_SWORD, 1), new ItemStack(Material.BOW, 1), KillcoinPerk.DAMAGE_POTION.getMenuIcon().clone(), KillcoinPerk.POISON_POTION.getMenuIcon().clone());
         killcoin.updateCoins(player);
         player.getInventory().setItem(8, UGUtils.createInstructionBook(game));
         player.getInventory().setItem(9, new ItemStack(Material.ARROW, 32));

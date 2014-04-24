@@ -37,14 +37,14 @@ public enum KillcoinPerk {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
-            player.getInventory().addItem(getMenuIcon().clone());
+            player.setItemInHand(UGUtils.setAmount(player.getItemInHand(), 2));
         }
     },
     POISON_POTION("Poison Potion", "Throw a Poison Potion!", new ItemStack(Material.POTION), 2, false, false) {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
-            player.getInventory().addItem(getMenuIcon().clone());
+            player.setItemInHand(UGUtils.setAmount(player.getItemInHand(), 2));
         }
     },
     HEALTH_POTION("Health Potion", "Drink a Health Potion!", new ItemStack(Material.POTION), 1, false, true) {
@@ -441,7 +441,9 @@ public enum KillcoinPerk {
             players.add(player.getName());
         }
         ultimateGames.getMessenger().sendGameMessage(player, arena.getGame(), DMessage.PERK_ACTIVATE, name);
-        activateSound.play(player, player.getLocation());
+        if (activateSound != null) {
+            activateSound.play(player, player.getLocation());
+        }
     }
 
     /**
@@ -478,13 +480,13 @@ public enum KillcoinPerk {
         damage.setSplash(true);
         damage.apply(DAMAGE_POTION.getIcon());
         damage.apply(DAMAGE_POTION.getMenuIcon());
-        DAMAGE_POTION.setActivateSound(new GameSound(Sound.GLASS, 1, 1));
+        DAMAGE_POTION.setActivateSound(null);
 
         Potion poison = new Potion(PotionType.POISON, 1);
         poison.setSplash(true);
         poison.apply(POISON_POTION.getIcon());
         poison.apply(POISON_POTION.getMenuIcon());
-        POISON_POTION.setActivateSound(new GameSound(Sound.GLASS, 1, 1));
+        POISON_POTION.setActivateSound(null);
 
         new Potion(PotionType.INSTANT_HEAL, 2).apply(HEALTH_POTION.getIcon());
         HEALTH_POTION.setActivateSound(new GameSound(Sound.DRINK, 1, 1));
