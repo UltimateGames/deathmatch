@@ -9,20 +9,25 @@ import me.ampayne2.ultimategames.api.games.Game;
 import me.ampayne2.ultimategames.api.games.GamePlugin;
 import me.ampayne2.ultimategames.api.utils.UGUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionType;
 
 import java.util.List;
 
@@ -30,7 +35,7 @@ public class Deathmatch extends GamePlugin {
     private UltimateGames ultimateGames;
     private Game game;
 
-    private Killcoin KILLCOIN;
+    private Killcoin killcoin;
 
     @Override
     public boolean loadGame(UltimateGames ultimateGames, Game game) {
@@ -38,9 +43,9 @@ public class Deathmatch extends GamePlugin {
         this.game = game;
         game.setMessages(DMessage.class);
 
-        KILLCOIN = new Killcoin(ultimateGames, game, this);
+        killcoin = new Killcoin(ultimateGames, game, this);
         ultimateGames.getGameItemManager()
-                .registerGameItem(game, KILLCOIN)
+                .registerGameItem(game, killcoin)
                 .registerGameItem(game, new Flashbang(ultimateGames));
 
         return true;
@@ -146,7 +151,7 @@ public class Deathmatch extends GamePlugin {
         player.setHealth(20.0);
         player.setFoodLevel(20);
         if (ultimateGames.getPointManager().hasPerk(game, player.getName(), "StartWithCoins")) {
-            KILLCOIN.addCoins(player.getName(), 5);
+            killcoin.addCoins(player.getName(), 5);
         }
         resetInventory(player);
         return true;
@@ -154,7 +159,7 @@ public class Deathmatch extends GamePlugin {
 
     @Override
     public void removePlayer(Player player, Arena arena) {
-        KILLCOIN.resetCoins(player.getName());
+        killcoin.resetCoins(player.getName());
         KillcoinPerk.deactivateAll(ultimateGames, arena, player);
     }
 
@@ -193,11 +198,11 @@ public class Deathmatch extends GamePlugin {
                 ultimateGames.getPointManager().addPoint(game, killerName, "kill", 1);
                 ultimateGames.getPointManager().addPoint(game, killerName, "store", 2);
                 if (KillcoinPerk.DOUBLE_KILLCOINS.isActivated(killerName)) {
-                    KILLCOIN.addCoins(killerName, 2);
+                    killcoin.addCoins(killerName, 2);
                 } else {
-                    KILLCOIN.addCoin(killerName);
+                    killcoin.addCoin(killerName);
                 }
-                KILLCOIN.updateCoins(killer);
+                killcoin.updateCoins(killer);
             } else {
                 Scoreboard scoreBoard = ultimateGames.getScoreboardManager().getScoreboard(arena);
                 if (scoreBoard != null) {
@@ -242,6 +247,55 @@ public class Deathmatch extends GamePlugin {
     }
 
     @Override
+    public void onPlayerInteract(Arena arena, PlayerInteractEvent event) {
+        if (arena.getStatus() == ArenaStatus.RUNNING && event.getItem() != null) {
+            ItemStack item = event.getItem();
+            if (item.getType() == Material.BOW) {
+                Player player = event.getPlayer();
+                if (!player.getInventory().contains(Material.ARROW)) {
+                    if (event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+                        ultimateGames.getMessenger().sendGameMessage(player, game, DMessage.OUT_OF_ARROWS);
+                    } else if (event.getAction().equals(Action.LEFT_CLICK_AIR)) {
+                        if (killcoin.getCoins(player.getName()) >= KillcoinPerk.ARROWS.getCost()) {
+                            KillcoinPerk.ARROWS.activate(ultimateGames, this, arena, player);
+                        } else {
+                            ultimateGames.getMessenger().sendGameMessage(event.getPlayer(), game, DMessage.PERK_NOTENOUGHCOINS, KillcoinPerk.ARROWS.getName());
+                        }
+                    }
+                }
+            } else {
+                for (KillcoinPerk killcoinPerk : KillcoinPerk.class.getEnumConstants()) {
+                    if (!killcoinPerk.showInMenu() && item.getType() == killcoinPerk.getIcon().getType()) {
+                        if (item.getType() == Material.POTION) {
+                            Potion potion = Potion.fromItemStack(item);
+                            if (!((potion.getType() == PotionType.INSTANT_DAMAGE && killcoinPerk == KillcoinPerk.DAMAGE_POTION) || (potion.getType() == PotionType.POISON && killcoinPerk == KillcoinPerk.POISON_POTION))) {
+                                continue;
+                            }
+                        }
+                        String playerName = event.getPlayer().getName();
+                        if (killcoin.getCoins(playerName) < killcoinPerk.getCost()) {
+                            ultimateGames.getMessenger().sendGameMessage(event.getPlayer(), game, DMessage.PERK_NOTENOUGHCOINS, killcoinPerk.getName());
+                        } else if (killcoinPerk.isActivated(playerName)) {
+                            ultimateGames.getMessenger().sendGameMessage(event.getPlayer(), game, DMessage.PERK_ALREADYACTIVE, killcoinPerk.getName());
+                        } else {
+                            if (killcoinPerk.canActivate(ultimateGames, this, arena, event.getPlayer())) {
+                                killcoinPerk.activate(ultimateGames, this, arena, event.getPlayer());
+                                killcoin.removeCoins(playerName, killcoinPerk.getCost());
+                                killcoin.updateCoins(event.getPlayer());
+                                return;
+                            } else {
+                                ultimateGames.getMessenger().sendGameMessage(event.getPlayer(), game, DMessage.PERK_CANNOTACTIVATE, killcoinPerk.getName());
+                            }
+                        }
+                        event.setCancelled(true);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
     public void onPlayerFoodLevelChange(Arena arena, FoodLevelChangeEvent event) {
         event.setCancelled(true);
     }
@@ -259,9 +313,19 @@ public class Deathmatch extends GamePlugin {
     @SuppressWarnings("deprecation")
     private void resetInventory(Player player) {
         player.getInventory().clear();
-        player.getInventory().addItem(UGUtils.createInstructionBook(game), new ItemStack(Material.IRON_SWORD, 1), new ItemStack(Material.BOW, 1), new ItemStack(Material.ARROW, 32));
+        ItemStack damagePotion = KillcoinPerk.DAMAGE_POTION.getIcon().clone();
+        UGUtils.nameItem(damagePotion, ChatColor.AQUA + KillcoinPerk.DAMAGE_POTION.getName());
+        UGUtils.setLore(damagePotion, ChatColor.GOLD + "Cost: " + KillcoinPerk.DAMAGE_POTION.getCost());
+
+        ItemStack poisonPotion = KillcoinPerk.POISON_POTION.getIcon().clone();
+        UGUtils.nameItem(poisonPotion, ChatColor.AQUA + KillcoinPerk.POISON_POTION.getName());
+        UGUtils.setLore(poisonPotion, ChatColor.GOLD + "Cost: " + KillcoinPerk.POISON_POTION.getCost());
+
+        player.getInventory().addItem(new ItemStack(Material.IRON_SWORD, 1), new ItemStack(Material.BOW, 1), damagePotion, poisonPotion);
+        killcoin.updateCoins(player);
+        player.getInventory().setItem(8, UGUtils.createInstructionBook(game));
+        player.getInventory().setItem(9, new ItemStack(Material.ARROW, 32));
         player.getInventory().setArmorContents(new ItemStack[]{new ItemStack(Material.LEATHER_BOOTS, 1), new ItemStack(Material.LEATHER_LEGGINGS, 1), new ItemStack(Material.LEATHER_CHESTPLATE, 1), new ItemStack(Material.LEATHER_HELMET, 1)});
-        KILLCOIN.updateCoins(player);
         player.updateInventory();
     }
 }

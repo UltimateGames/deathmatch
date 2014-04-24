@@ -26,63 +26,63 @@ public enum KillcoinPerk {
      * Item Related Perks
      */
 
-    FLASHBANG("Flashbang", "Blind players standing near the flashbang!", UGUtils.nameItem(new ItemStack(Material.CLAY_BALL), ChatColor.GOLD.toString() + ChatColor.BOLD + "Flashbang"), 1, false) {
+    FLASHBANG("Flashbang", "Blind players standing near the flashbang!", UGUtils.nameItem(new ItemStack(Material.CLAY_BALL), ChatColor.GOLD.toString() + ChatColor.BOLD + "Flashbang"), 1, false, true) {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
             player.getInventory().addItem(getIcon().clone());
         }
     },
-    DAMAGE_POTION("Damage Potion", "Get a Damage Potion!", new ItemStack(Material.POTION), 2, false) {
+    DAMAGE_POTION("Damage Potion", "Throw a Damage Potion!", new ItemStack(Material.POTION), 2, false, false) {
+        @Override
+        public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
+            super.activate(ultimateGames, deathmatch, arena, player);
+            player.getInventory().addItem(getMenuIcon().clone());
+        }
+    },
+    POISON_POTION("Poison Potion", "Throw a Poison Potion!", new ItemStack(Material.POTION), 2, false, false) {
+        @Override
+        public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
+            super.activate(ultimateGames, deathmatch, arena, player);
+            player.getInventory().addItem(getMenuIcon().clone());
+        }
+    },
+    HEALTH_POTION("Health Potion", "Drink a Health Potion!", new ItemStack(Material.POTION), 1, false, true) {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
             player.getInventory().addItem(getIcon().clone());
         }
     },
-    POISON_POTION("Poison Potion", "Get a Poison Potion!", new ItemStack(Material.POTION), 2, false) {
-        @Override
-        public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
-            super.activate(ultimateGames, deathmatch, arena, player);
-            player.getInventory().addItem(getIcon().clone());
-        }
-    },
-    HEALTH_POTION("Health Potion", "Get a Health Potion!", new ItemStack(Material.POTION), 1, false) {
-        @Override
-        public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
-            super.activate(ultimateGames, deathmatch, arena, player);
-            player.getInventory().addItem(getIcon().clone());
-        }
-    },
-    STRENGTH("Strength", "Increase your strength!", new ItemStack(Material.POTION), 8, true) {
+    STRENGTH("Strength", "Increase your strength!", new ItemStack(Material.POTION), 8, true, true) {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
             UGUtils.increasePotionEffect(player, PotionEffectType.INCREASE_DAMAGE);
         }
     },
-    SPEED("Speed", "Get a speed boost!", new ItemStack(Material.FEATHER), 2, true) {
+    SPEED("Speed", "Get a speed boost!", new ItemStack(Material.FEATHER), 2, true, true) {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
             UGUtils.increasePotionEffect(player, PotionEffectType.SPEED, 2);
         }
     },
-    FIRE_RESISTANCE("Fire Resistance", "Become resistant to fire!", new ItemStack(Material.FIRE), 3, true) {
+    FIRE_RESISTANCE("Fire Resistance", "Become resistant to fire!", new ItemStack(Material.FIRE), 3, true, true) {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
             UGUtils.increasePotionEffect(player, PotionEffectType.FIRE_RESISTANCE);
         }
     },
-    ENDER_PEARL("Ender Pearl", "Get an Ender Pearl!", new ItemStack(Material.ENDER_PEARL), 3, false, "EnderPearl") {
+    ENDER_PEARL("Ender Pearl", "Throw an Ender Pearl!", new ItemStack(Material.ENDER_PEARL), 3, false, true, "EnderPearl") {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
             player.getInventory().addItem(getIcon().clone());
         }
     },
-    GOLDEN_APPLE("Golden Apple", "Get a Golden Apple!", new ItemStack(Material.GOLDEN_APPLE), 5, false, "GoldenApple") {
+    GOLDEN_APPLE("Golden Apple", "Eat a Golden Apple!", new ItemStack(Material.GOLDEN_APPLE), 5, false, true, "GoldenApple") {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
@@ -94,14 +94,14 @@ public enum KillcoinPerk {
      * Bow Related Perks
      */
 
-    ARROWS("Extra Arrows", "Get 16 more arrows!", new ItemStack(Material.ARROW, 16), 2, false) {
+    ARROWS("Extra Arrows", "Get 32 more arrows!", new ItemStack(Material.ARROW, 32), 2, false, false) {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
             player.getInventory().addItem(getIcon().clone());
         }
     },
-    LONGBOW("Longbow", "Increase your bow's power!", new ItemStack(Material.BOW), 3, true, "Longbow") {
+    LONGBOW("Longbow", "Increase your bow's power!", new ItemStack(Material.BOW), 3, true, true, "Longbow") {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
@@ -115,7 +115,7 @@ public enum KillcoinPerk {
             }
         }
     },
-    FIREBOW("Firebow", "Set fire to your arrows!", new ItemStack(Material.BOW), 4, true, "Firebow") {
+    FIREBOW("Firebow", "Set fire to your arrows!", new ItemStack(Material.BOW), 4, true, true, "Firebow") {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
@@ -134,7 +134,7 @@ public enum KillcoinPerk {
      * Sword Related Perks
      */
 
-    FIRESWORD("Firesword", "Set fire to your sword!", new ItemStack(Material.IRON_SWORD), 4, true, "Firesword") {
+    FIRESWORD("Firesword", "Set fire to your sword!", new ItemStack(Material.IRON_SWORD), 4, true, true, "Firesword") {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
@@ -149,7 +149,7 @@ public enum KillcoinPerk {
             }
         }
     },
-    BROADSWORD("Broadsword", "Increase your sword's strength!", new ItemStack(Material.DIAMOND_SWORD), 5, true, "Broadsword") {
+    BROADSWORD("Broadsword", "Increase your sword's strength!", new ItemStack(Material.DIAMOND_SWORD), 5, true, true, "Broadsword") {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
@@ -169,7 +169,7 @@ public enum KillcoinPerk {
      * Armor Related Perks
      */
 
-    CACTUS_ARMOR("Cactus Armor", "Hurt enemies when they attack!", UGUtils.colorArmor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.fromRGB(127, 204, 25)), 4, true, "CactusArmor") {
+    CACTUS_ARMOR("Cactus Armor", "Hurt enemies when they attack!", UGUtils.colorArmor(new ItemStack(Material.LEATHER_CHESTPLATE), Color.fromRGB(127, 204, 25)), 4, true, true, "CactusArmor") {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
@@ -199,7 +199,7 @@ public enum KillcoinPerk {
             player.getInventory().setBoots(boots);
         }
     },
-    TANK("Tank", "Increase your damage resistance!", new ItemStack(Material.IRON_CHESTPLATE), 8, true, "Tank") {
+    TANK("Tank", "Increase your damage resistance!", new ItemStack(Material.IRON_CHESTPLATE), 8, true, true, "Tank") {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
@@ -225,7 +225,7 @@ public enum KillcoinPerk {
      */
 
     @SuppressWarnings("deprecation")
-    SUN_SONG("Sun Song", "Clear the rainy weather!", new ItemStack(175), 3, false, "SunSong") {
+    SUN_SONG("Sun Song", "Clear the rainy weather!", new ItemStack(175), 3, false, true, "SunSong") {
         @Override
         public boolean canActivate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             return player.getWorld().hasStorm();
@@ -235,9 +235,10 @@ public enum KillcoinPerk {
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
             player.getWorld().setStorm(false);
+            ultimateGames.getMessenger().sendGameMessage(arena, arena.getGame(), DMessage.SUN_SONG, player.getName());
         }
     },
-    RAIN_DANCE("Rain Dance", "Bring on the downpour!", new ItemStack(Material.WATER_BUCKET), 3, false, "RainDance") {
+    RAIN_DANCE("Rain Dance", "Bring on the downpour!", new ItemStack(Material.WATER_BUCKET), 3, false, true, "RainDance") {
         @Override
         public boolean canActivate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             return !player.getWorld().hasStorm();
@@ -247,9 +248,10 @@ public enum KillcoinPerk {
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
             player.getWorld().setStorm(true);
+            ultimateGames.getMessenger().sendGameMessage(arena, arena.getGame(), DMessage.RAIN_DANCE, player.getName());
         }
     },
-    WOLF_TAMER("Wolf Tamer", "Spawn a loyal attack dog!", new ItemStack(Material.BONE), 5, false, "WolfTamer") {
+    WOLF_TAMER("Wolf Tamer", "Spawn a loyal attack dog!", new ItemStack(Material.BONE), 5, false, true, "WolfTamer") {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
@@ -261,7 +263,7 @@ public enum KillcoinPerk {
             UGUtils.increasePotionEffect(wolf, PotionEffectType.SPEED);
         }
     },
-    INCREASE_MAX_HEALTH("+5 Max Health", "Increase your max health by 5!", new ItemStack(Material.BED), 10, false, "IncreaseMaxHealth") {
+    INCREASE_MAX_HEALTH("+5 Max Health", "Increase your max health by 5!", new ItemStack(Material.BED), 10, false, true, "IncreaseMaxHealth") {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
@@ -269,14 +271,16 @@ public enum KillcoinPerk {
             player.setHealth(player.getHealth() + 10);
         }
     },
-    DOUBLE_KILLCOINS("Double Killcoins", "Get 2 killcoins per kill until you die!", new ItemStack(Material.EMERALD), 6, true, "DoubleKillcoins");
+    DOUBLE_KILLCOINS("Double Killcoins", "Get 2 killcoins per kill until you die!", new ItemStack(Material.EMERALD), 6, true, true, "DoubleKillcoins");
 
     private final String name;
     private final String description;
     private final ItemStack icon;
+    private final ItemStack menuIcon;
     private final int cost;
     private final String perkName;
     private final boolean activePerk;
+    private final boolean showInMenu;
     private GameSound activateSound = new GameSound(Sound.HORSE_ARMOR, 1, 1.5F);
 
     /**
@@ -294,12 +298,16 @@ public enum KillcoinPerk {
      * @param activePerk  If the perk stays active when used.
      * @param perkName    The perk name.
      */
-    private KillcoinPerk(String name, String description, ItemStack icon, int cost, boolean activePerk, String perkName) {
+    private KillcoinPerk(String name, String description, ItemStack icon, int cost, boolean activePerk, boolean showInMenu, String perkName) {
         this.name = name;
         this.description = description;
         this.icon = icon;
+        menuIcon = icon.clone();
+        UGUtils.nameItem(menuIcon, ChatColor.AQUA + name);
+        UGUtils.setLore(menuIcon, ChatColor.GOLD + "Cost: " + cost);
         this.cost = cost;
         this.activePerk = activePerk;
+        this.showInMenu = showInMenu;
         this.perkName = perkName;
     }
 
@@ -312,13 +320,8 @@ public enum KillcoinPerk {
      * @param cost        The cost.
      * @param activePerk  If the perk stays active when used.
      */
-    private KillcoinPerk(String name, String description, ItemStack icon, int cost, boolean activePerk) {
-        this.name = name;
-        this.description = description;
-        this.icon = icon;
-        this.cost = cost;
-        this.activePerk = activePerk;
-        this.perkName = null;
+    private KillcoinPerk(String name, String description, ItemStack icon, int cost, boolean activePerk, boolean showInMenu) {
+        this(name, description, icon, cost, activePerk, showInMenu, null);
     }
 
     /**
@@ -349,6 +352,15 @@ public enum KillcoinPerk {
     }
 
     /**
+     * Gets the perk's menu icon.
+     *
+     * @return The perk's icon in the menu.
+     */
+    public ItemStack getMenuIcon() {
+        return menuIcon;
+    }
+
+    /**
      * Gets the perk's cost.
      *
      * @return The cost.
@@ -364,6 +376,15 @@ public enum KillcoinPerk {
      */
     public boolean isActivePerk() {
         return activePerk;
+    }
+
+    /**
+     * Checks if the perk should be shown in the perk menu.
+     *
+     * @return True if the perk should be shown in the menu, else false.
+     */
+    public boolean showInMenu() {
+        return showInMenu;
     }
 
     /**
@@ -456,14 +477,16 @@ public enum KillcoinPerk {
         Potion damage = new Potion(PotionType.INSTANT_DAMAGE, 1);
         damage.setSplash(true);
         damage.apply(DAMAGE_POTION.getIcon());
+        damage.apply(DAMAGE_POTION.getMenuIcon());
         DAMAGE_POTION.setActivateSound(new GameSound(Sound.GLASS, 1, 1));
 
         Potion poison = new Potion(PotionType.POISON, 1);
         poison.setSplash(true);
         poison.apply(POISON_POTION.getIcon());
+        poison.apply(POISON_POTION.getMenuIcon());
         POISON_POTION.setActivateSound(new GameSound(Sound.GLASS, 1, 1));
 
-        new Potion(PotionType.INSTANT_HEAL, 1).apply(HEALTH_POTION.getIcon());
+        new Potion(PotionType.INSTANT_HEAL, 2).apply(HEALTH_POTION.getIcon());
         HEALTH_POTION.setActivateSound(new GameSound(Sound.DRINK, 1, 1));
 
         new Potion(PotionType.STRENGTH, 1).apply(STRENGTH.getIcon());

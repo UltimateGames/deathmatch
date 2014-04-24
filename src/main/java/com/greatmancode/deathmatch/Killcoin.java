@@ -126,10 +126,11 @@ public class Killcoin extends GameItem implements Listener {
         if (playerCoins.containsKey(playerName)) {
             ItemStack coins = getItem();
             coins.setAmount(playerCoins.get(playerName));
-            player.getInventory().setItem(8, coins);
+            player.getInventory().setItem(7, coins);
             player.updateInventory();
         } else {
-            player.getInventory().setItem(8, null);
+            player.getInventory().setItem(7, null);
+            player.updateInventory();
         }
     }
 
@@ -148,11 +149,11 @@ public class Killcoin extends GameItem implements Listener {
 
         final List<KillcoinPerk> killcoinPerks = new ArrayList<>();
         for (KillcoinPerk killcoinPerk : KillcoinPerk.class.getEnumConstants()) {
-            if (killcoinPerk.getPerkName() == null || ultimateGames.getPointManager().hasPerk(game, playerName, killcoinPerk.getPerkName())) {
+            if (killcoinPerk.showInMenu() && (killcoinPerk.getPerkName() == null || ultimateGames.getPointManager().hasPerk(game, playerName, killcoinPerk.getPerkName()))) {
                 killcoinPerks.add(killcoinPerk);
             }
         }
-        IconMenu menu = new IconMenu(ChatColor.GOLD + "Spoils of War", ((int) Math.ceil(killcoinPerks.size() / 9.0)) * 9, new IconMenu.OptionClickEventHandler() {
+        IconMenu menu = new IconMenu(ChatColor.GOLD + "Spoils of War", IconMenu.getRequiredSize(killcoinPerks.size()), new IconMenu.OptionClickEventHandler() {
             @Override
             public void onOptionClick(IconMenu.OptionClickEvent event) {
                 KillcoinPerk killcoinPerk = killcoinPerks.get(event.getPosition());

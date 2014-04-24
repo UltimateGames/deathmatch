@@ -11,7 +11,10 @@ public enum DMessage implements Message {
     PERK_CANNOTACTIVATE("Perk.CannotActivate", "&4Cannot activate %s!"),
     PERK_ALREADYACTIVE("Perk.AlreadyActive", "&b%s&b is already active!"),
     PERK_NOTENOUGHCOINS("Perk.NotEnoughCoins", "&4Not enough killcoins to activate %s!"),
-    PERK_NOTUNLOCKED("Perk.NotUnlocked", "&4You haven't unlocked %s!");
+    PERK_NOTUNLOCKED("Perk.NotUnlocked", "&4You haven't unlocked %s!"),
+    OUT_OF_ARROWS("Perk.OutOfArrows", "&4You are out of arrows! Left click to refill for 2 killcoins."),
+    SUN_SONG("SunSong", "&b%s sung the Sun Song!"),
+    RAIN_DANCE("RainDance", "&b%s danced the Rain Dance!");
 
     private String message;
     private final String path;
