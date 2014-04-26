@@ -234,7 +234,7 @@ public class Deathmatch extends GamePlugin {
         if (event.getEntity() instanceof Player) {
             Entity damager = event.getDamager();
             if (damager instanceof Arrow) {
-                LivingEntity entity = ((Arrow) damager).getShooter();
+                LivingEntity entity = (LivingEntity) ((Arrow) damager).getShooter();
                 if (entity instanceof Player) {
                     String playerName = ((Player) entity).getName();
                     if (ultimateGames.getPlayerManager().isPlayerInArena(playerName) && ultimateGames.getPlayerManager().getPlayerArena(playerName).getStatus() != ArenaStatus.RUNNING) {
