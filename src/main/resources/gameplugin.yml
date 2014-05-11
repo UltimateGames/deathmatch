@@ -15,3 +15,9 @@ CustomValues:
   GameTime: 300
 Instructions:
 - "Kill others as much as possible in the time given!"
+BlockPlaceWhitelist:
+- "HARD_CLAY"
+- "STAINED_CLAY"
+BlockBreakWhitelist:
+- "HARD_CLAY"
+- "STAINED_CLAY"

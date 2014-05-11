@@ -189,10 +189,7 @@ public enum KillcoinPerk {
                 leggings = UGUtils.colorArmor(new ItemStack(Material.LEATHER_LEGGINGS), color);
                 boots = UGUtils.colorArmor(new ItemStack(Material.LEATHER_BOOTS), color);
             }
-            helmet.addEnchantment(Enchantment.THORNS, 5);
-            chestplate.addEnchantment(Enchantment.THORNS, 5);
-            leggings.addEnchantment(Enchantment.THORNS, 5);
-            boots.addEnchantment(Enchantment.THORNS, 5);
+            UGUtils.enchantItems(Enchantment.THORNS, 5, helmet, chestplate, leggings, boots);
             player.getInventory().setHelmet(helmet);
             player.getInventory().setChestplate(chestplate);
             player.getInventory().setLeggings(leggings);
@@ -208,15 +205,33 @@ public enum KillcoinPerk {
             ItemStack leggings = new ItemStack(Material.IRON_LEGGINGS);
             ItemStack boots = new ItemStack(Material.IRON_BOOTS);
             if (CACTUS_ARMOR.isActivated(player.getName())) {
-                helmet.addEnchantment(Enchantment.THORNS, 5);
-                chestplate.addEnchantment(Enchantment.THORNS, 5);
-                leggings.addEnchantment(Enchantment.THORNS, 5);
-                boots.addEnchantment(Enchantment.THORNS, 5);
+                UGUtils.enchantItems(Enchantment.THORNS, 5, helmet, chestplate, leggings, boots);
             }
             player.getInventory().setHelmet(helmet);
             player.getInventory().setChestplate(chestplate);
             player.getInventory().setLeggings(leggings);
             player.getInventory().setBoots(boots);
+        }
+    },
+
+    /**
+     * Construction Perks
+     */
+
+    @SuppressWarnings("deprecation")
+    BUILDING_BLOCKS("Building Blocks", "Build a base!", new ItemStack(Material.STAINED_CLAY, 32, DyeColor.GREEN.getWoolData()), 5, false, true) {
+        @Override
+        public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
+            super.activate(ultimateGames, deathmatch, arena, player);
+            player.getInventory().addItem(getIcon().clone());
+        }
+    },
+
+    PICKAXE("Iron Pickaxe", "Demolish player buildings!", new ItemStack(Material.IRON_PICKAXE), 2, false, true) {
+        @Override
+        public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
+            super.activate(ultimateGames, deathmatch, arena, player);
+            player.getInventory().addItem(getIcon().clone());
         }
     },
 

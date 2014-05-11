@@ -6,6 +6,7 @@ public enum DMessage implements Message {
     KILL("Kill", "%s killed %s!"),
     DEATH("Death", "%s died!"),
     GAME_END("GameEnd", "&b%s won %s on arena %s!"),
+    GAME_NOT_STARTED("GameNotStarted", "&4Cannot buy perks before the game starts!"),
     PERK_ACTIVATE("Perk.Activate", "&bActivated %s&b!"),
     PERK_DEACTIVATE("Perk.Deactivate", "&b%s&b is no longer active!"),
     PERK_CANNOTACTIVATE("Perk.CannotActivate", "&4Cannot activate %s!"),
