@@ -54,14 +54,14 @@ public enum KillcoinPerk {
             player.getInventory().addItem(getIcon().clone());
         }
     },
-    STRENGTH("Strength", "Increase your strength!", new ItemStack(Material.POTION), 8, true, true) {
+    STRENGTH("Strength", "Increase your strength!", new ItemStack(Material.POTION), 8, false, true) {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
             UGUtils.increasePotionEffect(player, PotionEffectType.INCREASE_DAMAGE);
         }
     },
-    SPEED("Speed", "Get a speed boost!", new ItemStack(Material.FEATHER), 2, true, true) {
+    SPEED("Speed", "Get a speed boost!", new ItemStack(Material.FEATHER), 2, false, true) {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
