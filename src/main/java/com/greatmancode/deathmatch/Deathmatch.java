@@ -9,6 +9,7 @@ import me.ampayne2.ultimategames.api.games.Game;
 import me.ampayne2.ultimategames.api.games.GamePlugin;
 import me.ampayne2.ultimategames.api.utils.UGUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -225,7 +226,23 @@ public class Deathmatch extends GamePlugin {
 
     @Override
     public void onEntityDamage(Arena arena, EntityDamageEvent event) {
-        if (arena.getStatus() != ArenaStatus.RUNNING) {
+        if (arena.getStatus() == ArenaStatus.RUNNING) {
+            if (event.getEntity() instanceof Player) {
+                Player player = (Player) event.getEntity();
+                switch (event.getCause()) {
+                    case FALL:
+                    case FIRE:
+                    case FIRE_TICK:
+                    case POISON:
+                    case SUICIDE:
+                    case WITHER:
+                        player.getWorld().playEffect(player.getLocation(), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
+                        break;
+                    default:
+                        player.getWorld().playEffect(player.getEyeLocation(), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
+                }
+            }
+        } else {
             event.setCancelled(true);
         }
     }
