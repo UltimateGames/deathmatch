@@ -95,9 +95,11 @@ public class Deathmatch extends GamePlugin {
         for (String playerName : arena.getPlayers()) {
             scoreBoard.addPlayer(Bukkit.getPlayerExact(playerName));
             scoreBoard.setScore(playerName, 0);
+            Player player = Bukkit.getPlayer(playerName);
+            ultimateGames.getSpawnpointManager().getRandomSpawnPoint(arena).teleportPlayer(player);
+            setInventory(player);
         }
         scoreBoard.setVisible(true);
-
         return true;
     }
 
@@ -143,9 +145,6 @@ public class Deathmatch extends GamePlugin {
         if (arena.getStatus() == ArenaStatus.OPEN && arena.getPlayers().size() >= arena.getMinPlayers() && !ultimateGames.getCountdownManager().hasStartingCountdown(arena)) {
             ultimateGames.getCountdownManager().createStartingCountdown(arena, ultimateGames.getConfigManager().getGameConfig(game).getInt("CustomValues.StartWaitTime"));
         }
-        PlayerSpawnPoint spawnPoint = ultimateGames.getSpawnpointManager().getRandomSpawnPoint(arena);
-        spawnPoint.lock(false);
-        spawnPoint.teleportPlayer(player);
         for (PotionEffect potionEffect : player.getActivePotionEffects()) {
             player.removePotionEffect(potionEffect.getType());
         }
@@ -154,7 +153,8 @@ public class Deathmatch extends GamePlugin {
         if (ultimateGames.getPointManager().hasPerk(game, player.getName(), "StartWithCoins")) {
             killcoin.addCoins(player.getName(), 5);
         }
-        resetInventory(player);
+        player.getInventory().clear();
+        player.updateInventory();
         return true;
     }
 
@@ -221,7 +221,7 @@ public class Deathmatch extends GamePlugin {
     @Override
     public void onPlayerRespawn(Arena arena, PlayerRespawnEvent event) {
         event.setRespawnLocation(ultimateGames.getSpawnpointManager().getRandomSpawnPoint(arena).getLocation());
-        resetInventory(event.getPlayer());
+        setInventory(event.getPlayer());
     }
 
     @Override
@@ -336,7 +336,7 @@ public class Deathmatch extends GamePlugin {
     }
 
     @SuppressWarnings("deprecation")
-    private void resetInventory(Player player) {
+    private void setInventory(Player player) {
         PlayerInventory inventory = player.getInventory();
         inventory.clear();
         inventory.setItem(0, new ItemStack(Material.IRON_SWORD));
