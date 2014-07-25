@@ -4,7 +4,6 @@ import me.ampayne2.ultimategames.api.UltimateGames;
 import me.ampayne2.ultimategames.api.arenas.Arena;
 import me.ampayne2.ultimategames.api.arenas.ArenaStatus;
 import me.ampayne2.ultimategames.api.arenas.scoreboards.Scoreboard;
-import me.ampayne2.ultimategames.api.arenas.spawnpoints.PlayerSpawnPoint;
 import me.ampayne2.ultimategames.api.games.Game;
 import me.ampayne2.ultimategames.api.games.GamePlugin;
 import me.ampayne2.ultimategames.api.utils.UGUtils;
@@ -141,6 +140,7 @@ public class Deathmatch extends GamePlugin {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean addPlayer(Player player, Arena arena) {
         if (arena.getStatus() == ArenaStatus.OPEN && arena.getPlayers().size() >= arena.getMinPlayers() && !ultimateGames.getCountdownManager().hasStartingCountdown(arena)) {
             ultimateGames.getCountdownManager().createStartingCountdown(arena, ultimateGames.getConfigManager().getGameConfig(game).getInt("CustomValues.StartWaitTime"));

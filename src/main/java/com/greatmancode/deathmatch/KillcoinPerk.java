@@ -2,9 +2,13 @@ package com.greatmancode.deathmatch;
 
 import me.ampayne2.ultimategames.api.UltimateGames;
 import me.ampayne2.ultimategames.api.arenas.Arena;
-import me.ampayne2.ultimategames.api.effects.GameSound;
 import me.ampayne2.ultimategames.api.utils.UGUtils;
-import org.bukkit.*;
+import ninja.amp.ampeffects.effects.sounds.SoundEffect;
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -185,7 +189,7 @@ public enum KillcoinPerk {
             } else {
                 Color color = Color.fromRGB(127, 204, 25);
                 helmet = UGUtils.colorArmor(new ItemStack(Material.LEATHER_HELMET), color);
-                chestplate =  UGUtils.colorArmor(new ItemStack(Material.LEATHER_CHESTPLATE), color);
+                chestplate = UGUtils.colorArmor(new ItemStack(Material.LEATHER_CHESTPLATE), color);
                 leggings = UGUtils.colorArmor(new ItemStack(Material.LEATHER_LEGGINGS), color);
                 boots = UGUtils.colorArmor(new ItemStack(Material.LEATHER_BOOTS), color);
             }
@@ -296,7 +300,7 @@ public enum KillcoinPerk {
     private final String perkName;
     private final boolean activePerk;
     private final boolean showInMenu;
-    private GameSound activateSound = new GameSound(Sound.HORSE_ARMOR, 1, 1.5F);
+    private SoundEffect activateSound = new SoundEffect(Sound.HORSE_ARMOR, 1, 1.5F);
 
     /**
      * Players with the perk currently active.
@@ -416,7 +420,7 @@ public enum KillcoinPerk {
      *
      * @param activateSound The activation sound.
      */
-    public void setActivateSound(GameSound activateSound) {
+    public void setActivateSound(SoundEffect activateSound) {
         this.activateSound = activateSound;
     }
 
@@ -457,7 +461,7 @@ public enum KillcoinPerk {
         }
         ultimateGames.getMessenger().sendGameMessage(player, arena.getGame(), DMessage.PERK_ACTIVATE, name);
         if (activateSound != null) {
-            activateSound.play(player, player.getLocation());
+            activateSound.play(player.getLocation(), player);
         }
     }
 
@@ -504,29 +508,29 @@ public enum KillcoinPerk {
         POISON_POTION.setActivateSound(null);
 
         new Potion(PotionType.INSTANT_HEAL, 2).apply(HEALTH_POTION.getIcon());
-        HEALTH_POTION.setActivateSound(new GameSound(Sound.DRINK, 1, 1));
+        HEALTH_POTION.setActivateSound(new SoundEffect(Sound.DRINK, 1, 1));
 
         new Potion(PotionType.STRENGTH, 1).apply(STRENGTH.getIcon());
-        STRENGTH.setActivateSound(new GameSound(Sound.DRINK, 1, 1));
+        STRENGTH.setActivateSound(new SoundEffect(Sound.DRINK, 1, 1));
 
-        SPEED.setActivateSound(new GameSound(Sound.DRINK, 1, 1));
+        SPEED.setActivateSound(new SoundEffect(Sound.DRINK, 1, 1));
 
-        FIRE_RESISTANCE.setActivateSound(new GameSound(Sound.DRINK, 1, 1));
+        FIRE_RESISTANCE.setActivateSound(new SoundEffect(Sound.DRINK, 1, 1));
 
-        ENDER_PEARL.setActivateSound(new GameSound(Sound.ENDERMAN_TELEPORT, 1, 1));
+        ENDER_PEARL.setActivateSound(new SoundEffect(Sound.ENDERMAN_TELEPORT, 1, 1));
 
-        ARROWS.setActivateSound(new GameSound(Sound.SHOOT_ARROW, 1, 1));
+        ARROWS.setActivateSound(new SoundEffect(Sound.SHOOT_ARROW, 1, 1));
 
         LONGBOW.getIcon().addEnchantment(Enchantment.ARROW_DAMAGE, 1);
 
         FIREBOW.getIcon().addEnchantment(Enchantment.ARROW_FIRE, 1);
-        FIREBOW.setActivateSound(new GameSound(Sound.FIRE_IGNITE, 1, 1));
+        FIREBOW.setActivateSound(new SoundEffect(Sound.FIRE_IGNITE, 1, 1));
 
         BROADSWORD.getIcon().addEnchantment(Enchantment.DAMAGE_ALL, 2);
 
         FIRESWORD.getIcon().addEnchantment(Enchantment.FIRE_ASPECT, 1);
-        FIRESWORD.setActivateSound(new GameSound(Sound.FIRE_IGNITE, 1, 1));
+        FIRESWORD.setActivateSound(new SoundEffect(Sound.FIRE_IGNITE, 1, 1));
 
-        WOLF_TAMER.setActivateSound(new GameSound(Sound.WOLF_BARK, 1, 1));
+        WOLF_TAMER.setActivateSound(new SoundEffect(Sound.WOLF_BARK, 1, 1));
     }
 }
