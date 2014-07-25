@@ -282,12 +282,20 @@ public enum KillcoinPerk {
             UGUtils.increasePotionEffect(wolf, PotionEffectType.SPEED);
         }
     },
-    INCREASE_MAX_HEALTH("+2.5 Max Health", "Increase your max health by 2.5!", new ItemStack(Material.BED), 10, false, true, "IncreaseMaxHealth") {
+    INCREASE_MAX_HEALTH("+10 Max Health", "Get an extra row of hearts!", new ItemStack(Material.BED), 10, true, true, "IncreaseMaxHealth") {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
-            player.setMaxHealth(player.getMaxHealth() + 5);
-            player.setHealth(player.getHealth() + 5);
+            player.setMaxHealth(player.getMaxHealth() + 20);
+            player.setHealth(player.getHealth() + 20);
+        }
+
+        @Override
+        public void deactivate(UltimateGames ultimateGames, Arena arena, Player player) {
+            if (isActivated(player.getName())) {
+                player.setMaxHealth(player.getMaxHealth() - 20);
+            }
+            super.deactivate(ultimateGames, arena, player);
         }
     },
     DOUBLE_KILLCOINS("Double Killcoins", "Get 2 killcoins per kill until you die!", new ItemStack(Material.EMERALD), 6, true, true, "DoubleKillcoins");
