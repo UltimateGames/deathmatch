@@ -1,7 +1,7 @@
 main-class: "com.greatmancode.deathmatch.Deathmatch"
 description: "The official Ultimate Games Deathmatch game"
 version: "1.0"
-author: "greatman"
+author: "ampayne2, greatman"
 playerType: "CONFIGUREABLE"
 DefaultSettings:
   MinPlayers: 2

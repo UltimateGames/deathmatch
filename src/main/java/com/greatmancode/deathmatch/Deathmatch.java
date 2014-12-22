@@ -6,14 +6,16 @@ import me.ampayne2.ultimategames.api.arenas.ArenaStatus;
 import me.ampayne2.ultimategames.api.arenas.scoreboards.Scoreboard;
 import me.ampayne2.ultimategames.api.games.Game;
 import me.ampayne2.ultimategames.api.games.GamePlugin;
+import me.ampayne2.ultimategames.api.utils.ArmorMaterial;
+import me.ampayne2.ultimategames.api.utils.ArmorType;
 import me.ampayne2.ultimategames.api.utils.UGUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
+import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Wolf;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -96,7 +98,7 @@ public class Deathmatch extends GamePlugin {
             scoreBoard.setScore(playerName, 0);
             Player player = Bukkit.getPlayer(playerName);
             ultimateGames.getSpawnpointManager().getRandomSpawnPoint(arena).teleportPlayer(player);
-            setInventory(player);
+            resetInventory(player);
         }
         scoreBoard.setVisible(true);
         return true;
@@ -154,6 +156,7 @@ public class Deathmatch extends GamePlugin {
             killcoin.addCoins(player.getName(), 5);
         }
         player.getInventory().clear();
+        player.getInventory().setArmorContents(null);
         player.updateInventory();
         return true;
     }
@@ -164,8 +167,8 @@ public class Deathmatch extends GamePlugin {
         KillcoinPerk.deactivateAll(ultimateGames, arena, player);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
+    @SuppressWarnings("deprecation")
     public boolean addSpectator(Player player, Arena arena) {
         ultimateGames.getSpawnpointManager().getSpectatorSpawnPoint(arena).teleportPlayer(player);
         for (PotionEffect potionEffect : player.getActivePotionEffects()) {
@@ -221,7 +224,7 @@ public class Deathmatch extends GamePlugin {
     @Override
     public void onPlayerRespawn(Arena arena, PlayerRespawnEvent event) {
         event.setRespawnLocation(ultimateGames.getSpawnpointManager().getRandomSpawnPoint(arena).getLocation());
-        setInventory(event.getPlayer());
+        resetInventory(event.getPlayer());
     }
 
     @Override
@@ -249,13 +252,18 @@ public class Deathmatch extends GamePlugin {
 
     @Override
     public void onEntityDamageByEntity(Arena arena, EntityDamageByEntityEvent event) {
-        if (event.getEntity() instanceof Player) {
-            Entity damager = event.getDamager();
-            if (damager instanceof Arrow) {
-                LivingEntity entity = (LivingEntity) ((Arrow) damager).getShooter();
-                if (entity instanceof Player) {
-                    String playerName = ((Player) entity).getName();
-                    if (ultimateGames.getPlayerManager().isPlayerInArena(playerName) && ultimateGames.getPlayerManager().getPlayerArena(playerName).getStatus() != ArenaStatus.RUNNING) {
+        if (event.getEntity() instanceof Wolf) {
+            AnimalTamer animalTamer = ((Wolf) event.getEntity()).getOwner();
+            if (animalTamer != null && animalTamer instanceof Player) {
+                Player damager = null;
+                if (event.getDamager() instanceof Player) {
+                    damager = (Player) event.getDamager();
+                } else if (event.getDamager() instanceof Arrow && ((Arrow) event.getDamager()).getShooter() instanceof Player) {
+                    damager = (Player) ((Arrow) event.getDamager()).getShooter();
+                }
+                if (damager != null) {
+                    Player owner = (Player) animalTamer;
+                    if (owner.getUniqueId().equals(damager.getUniqueId())) {
                         event.setCancelled(true);
                     }
                 }
@@ -263,8 +271,8 @@ public class Deathmatch extends GamePlugin {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Override
+    @SuppressWarnings("deprecation")
     public void onPlayerInteract(Arena arena, PlayerInteractEvent event) {
         if (event.getItem() != null) {
             if (arena.getStatus() == ArenaStatus.RUNNING) {
@@ -336,7 +344,7 @@ public class Deathmatch extends GamePlugin {
     }
 
     @SuppressWarnings("deprecation")
-    private void setInventory(Player player) {
+    private void resetInventory(Player player) {
         PlayerInventory inventory = player.getInventory();
         inventory.clear();
         inventory.setItem(0, new ItemStack(Material.IRON_SWORD));

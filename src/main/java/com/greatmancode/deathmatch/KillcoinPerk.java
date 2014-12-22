@@ -51,7 +51,7 @@ public enum KillcoinPerk {
             player.setItemInHand(UGUtils.setAmount(player.getItemInHand(), 2));
         }
     },
-    HEALTH_POTION("Health Potion", "Drink a Health Potion!", new ItemStack(Material.POTION), 1, false, true) {
+    HEALTH_POTION("Health Potion", "Get a Health Potion!", new ItemStack(Material.POTION), 1, false, true) {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
@@ -79,14 +79,14 @@ public enum KillcoinPerk {
             UGUtils.increasePotionEffect(player, PotionEffectType.FIRE_RESISTANCE);
         }
     },
-    ENDER_PEARL("Ender Pearl", "Throw an Ender Pearl!", new ItemStack(Material.ENDER_PEARL), 3, false, true, "EnderPearl") {
+    ENDER_PEARL("Ender Pearl", "Get an Ender Pearl!", new ItemStack(Material.ENDER_PEARL), 3, false, true, "EnderPearl") {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
             player.getInventory().addItem(getIcon().clone());
         }
     },
-    GOLDEN_APPLE("Golden Apple", "Eat a Golden Apple!", new ItemStack(Material.GOLDEN_APPLE), 5, false, true, "GoldenApple") {
+    GOLDEN_APPLE("Golden Apple", "Get a Golden Apple!", new ItemStack(Material.GOLDEN_APPLE), 5, false, true, "GoldenApple") {
         @Override
         public void activate(UltimateGames ultimateGames, Deathmatch deathmatch, Arena arena, Player player) {
             super.activate(ultimateGames, deathmatch, arena, player);
